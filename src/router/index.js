@@ -62,17 +62,31 @@ export const HomeRouter = {
   ]
 }
 
-export const LoginRouter = {
-  path: '/login',
-  name: 'Login',
-  meta: {
-    title: '登录',
-    index: 9
-  },
-  components: {
-    HomeRouter: () => import('../components/pages/Login.vue')
+export const LoginRouter = [
+  {
+    path: '/login',
+    name: 'Login',
+    meta: {
+      title: '登录',
+      index: 9
+    },
+    components: {
+      HomeRouter: () => import('../components/pages/Login.vue')
+    }
   }
-}
+  // ,
+  // {
+  //   path: '/registry',
+  //   name: 'Registry',
+  //   meta: {
+  //     title: '注册',
+  //     index: 9
+  //   },
+  //   components: {
+  //     HomeRouter: () => import('../components/pages/Login.vue')
+  //   }
+  // }
+]
 
 export const page404 = {
   path: '/*',
@@ -89,7 +103,7 @@ export default new Router({
   mode: 'history',
   routes: [
     HomeRouter,
-    LoginRouter,
+    ...LoginRouter,
     page404
   ]
 })

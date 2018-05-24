@@ -20,7 +20,7 @@ Vue.use(ToastPlugin, { width: 'auto' })
 
 sync(store, router)
 
-Vue.use(VueNavigation, {router, store, moduleName: 'navigation', keyName: 'rqq'})
+Vue.use(VueNavigation, {router, store, moduleName: 'navigation', keyName: 'p'})
 
 router.beforeEach((to, from, next) => {
   // store.commit('UPDATE_LOADING_STATUS', {isLoading: true})
