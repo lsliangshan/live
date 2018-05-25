@@ -171,4 +171,11 @@
     /*opacity: 0;*/
     transform: translate3d(-100%, 0, 0);
   }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s ease;
+  }
+  .fade-enter, .fade-leave-active {
+    opacity: 0;
+  }
 </style>

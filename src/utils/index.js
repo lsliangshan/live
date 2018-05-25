@@ -56,9 +56,53 @@ kit.title = function (title) {
   window.document.title = (title || '智愚')
 }
 
+const _func = (function () {
+  const _validatePhonenum = function (val) {
+    let _val = val || ''
+    if (!_val || (_val.trim() === '')) {
+      return {
+        valid: false,
+        msg: '手机号不能为空'
+      }
+    } else if (!/^1[345678]\d{9}$/.test(_val)) {
+      return {
+        valid: false,
+        msg: '手机号格式不正确'
+      }
+    } else {
+      return {
+        valid: true
+      }
+    }
+  }
+  const _validatePassword = function (val) {
+    let _val = val || ''
+    if (!_val || (_val.trim() === '')) {
+      return {
+        valid: false,
+        msg: '密码不能为空'
+      }
+    } else if (_val.trim().length < 6) {
+      return {
+        valid: false,
+        msg: '密码最少为6位'
+      }
+    } else {
+      return {
+        valid: true
+      }
+    }
+  }
+  return {
+    validatePhonenum: _validatePhonenum,
+    validatePassword: _validatePassword
+  }
+})()
+
 export default {
   storage: _storage,
   isEmptyObj: _isEmptyObj,
   getUUID: getUUID,
-  kit: kit
+  kit: kit,
+  func: _func
 }

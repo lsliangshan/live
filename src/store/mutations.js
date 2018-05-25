@@ -35,9 +35,18 @@
  */
 
 import * as types from './mutation-types'
+import utils from '../utils'
 
 export const mutations = {
   [types.UPDATE_LOADING_STATUS] (state, data) {
     state.isLoading = data.isLoading
+  },
+  [types.CACHE_LOGIN_DATA] (state, data) {
+    state.loginInfo = data
+    if (!utils.isEmptyObj(data)) {
+      utils.storage.setItem(state.localStorageKeys.userInfo, data)
+    } else {
+      utils.storage.removeItem(state.localStorageKeys.userInfo)
+    }
   }
 }

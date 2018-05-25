@@ -85,5 +85,5 @@ export function time (text) {
 }
 
 export function phonenum (text) {
-  return text.replace(/(\d{3})(\d{4})(\d{4})/, '$1****$3')
+  return text ? text.replace(/(\d{3})(\d{4})(\d{4})/, '$1****$3') : ''
 }

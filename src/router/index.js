@@ -3,6 +3,31 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
+export const ProfilePages = [
+  {
+    path: '/profile/detail',
+    name: 'ProfileDetail',
+    meta: {
+      title: '个人信息',
+      index: 2
+    },
+    components: {
+      HomeRouter: () => import('../components/profile/Detail.vue')
+    }
+  },
+  {
+    path: '/profile/detail/headicon',
+    name: 'DetailHeadIcon',
+    meta: {
+      title: '头像',
+      index: 3
+    },
+    components: {
+      HomeRouter: () => import('../components/profile/detail/HeadIcon.vue')
+    }
+  }
+]
+
 export const HomeRouter = {
   path: '/',
   name: 'Home',
@@ -74,18 +99,6 @@ export const LoginRouter = [
       HomeRouter: () => import('../components/pages/Login.vue')
     }
   }
-  // ,
-  // {
-  //   path: '/registry',
-  //   name: 'Registry',
-  //   meta: {
-  //     title: '注册',
-  //     index: 9
-  //   },
-  //   components: {
-  //     HomeRouter: () => import('../components/pages/Login.vue')
-  //   }
-  // }
 ]
 
 export const page404 = {
@@ -103,6 +116,7 @@ export default new Router({
   mode: 'history',
   routes: [
     HomeRouter,
+    ...ProfilePages,
     ...LoginRouter,
     page404
   ]

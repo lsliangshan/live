@@ -112,17 +112,10 @@ export const actions = {
         baseURL: params.baseUrl || state.requestInfo.baseUrl,
         url: params.url,
         data: querystring.stringify(params.data)
-      }).then((res) => {
-        if (res.config) {
-          delete res.config
-        }
-        if (res.status === 200) {
-          resolve(res.data)
-        } else {
-          reject(res)
-        }
+      }).then(({data}) => {
+        resolve(data)
       }).catch(err => {
-        reject(err)
+        reject(err.message)
       })
     })
   },
@@ -137,17 +130,10 @@ export const actions = {
         baseURL: params.baseUrl || state.requestInfo.baseUrl,
         url: params.url,
         data: querystring.stringify(params.data)
-      }).then((res) => {
-        if (res.config) {
-          delete res.config
-        }
-        if (res.status === 200) {
-          resolve(res.data)
-        } else {
-          reject(res)
-        }
+      }).then(({data}) => {
+        resolve(data)
       }).catch(err => {
-        reject(err)
+        reject(err.message)
       })
     })
   },

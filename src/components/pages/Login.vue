@@ -19,14 +19,17 @@
                    placeholder="请输入密码"
                    required
                    class="login_input"
-                   :is-type="noEmpty"
+                   :is-type="validatePassword"
                    v-model="loginFormData.password"
                    @on-click-error-icon="showError"
           ></x-input>
 
           <div class="gap_24"></div>
 
-          <x-button type="primary" text="登录" :disabled="!canLogin"></x-button>
+          <x-button type="primary" :disabled="!canLogin" @click.native="login">
+            <inline-loading v-if="canLogin && isLoggingIn"></inline-loading>
+            登录
+          </x-button>
 
           <div class="gap_12"></div>
 
@@ -43,12 +46,12 @@
           <div class="login_form_header">注册</div>
           <div class="gap_12"></div>
           <x-input type="text" label-width="70px"
-                   title="用户名"
-                   placeholder="请输入用户名"
+                   title="手机号"
+                   placeholder="请输入手机号"
                    required
                    class="login_input"
-                   :is-type="noEmpty"
-                   v-model="registryFormData.username"
+                   :is-type="validatePhonenum"
+                   v-model="registryFormData.phonenum"
                    @on-click-error-icon="showError"
           ></x-input>
           <x-input type="password" label-width="70px"
@@ -56,7 +59,7 @@
                    placeholder="请输入密码"
                    required
                    class="login_input"
-                   :is-type="noEmpty"
+                   :is-type="validatePassword"
                    v-model="registryFormData.password"
                    @on-click-error-icon="showError"
           ></x-input>
@@ -73,7 +76,10 @@
 
           <div class="gap_24"></div>
 
-          <x-button type="primary" text="注册" :disabled="!canRegistry"></x-button>
+          <x-button type="primary" :disabled="!canRegistry" @click.native="registry">
+            <inline-loading v-if="canRegistry && isRegistering"></inline-loading>
+            注册
+          </x-button>
 
           <div class="gap_12"></div>
 
@@ -156,21 +162,18 @@
   .weui-cell:before {
     border-top: none;
   }
-
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .5s ease;
-  }
-  .fade-enter, .fade-leave-active {
-    opacity: 0;
-  }
 </style>
 <script>
-  import { Group, XInput, XButton } from 'vux'
+  import { Group, XInput, XButton, InlineLoading } from 'vux'
+  import * as types from '../../store/mutation-types'
+  import utils from '../../utils'
   export default {
     name: 'LoginOrRegistry',
     data () {
       return {
         action: 'login',
+        validatePhonenum: utils.func.validatePhonenum,
+        validatePassword: utils.func.validatePassword,
         noEmpty (val) {
           let _val = val || ''
           if (!_val || (_val.trim() === '')) {
@@ -184,16 +187,19 @@
             }
           }
         },
+        requestInfo: this.$store.state.requestInfo,
+        localStorageKeys: this.$store.state.localStorageKeys,
         loginFormData: {
           username: '',
           password: ''
         },
         registryFormData: {
-          username: '',
+          phonenum: '',
           password: '',
           rePassword: ''
         },
-        isLoggingIn: false // 正在登录中
+        isLoggingIn: false, // 正在登录中
+        isRegistering: false // 正在注册中
       }
     },
     computed: {
@@ -204,21 +210,83 @@
         return (this.loginFormData.username.trim() !== '' && this.loginFormData.password.trim() !== '')
       },
       canRegistry () {
-        return (this.registryFormData.username.trim() !== '' && this.registryFormData.password.trim() !== '' && (this.registryFormData.password === this.registryFormData.rePassword))
+        return (this.validatePhonenum(this.registryFormData.phonenum).valid && this.registryFormData.password.trim() !== '' && (this.registryFormData.password === this.registryFormData.rePassword))
       }
     },
     created () {
       this.$nextTick(() => {
-        this.action = this.$route.name.toLowerCase()
+        this.action = this.initAction()
       })
     },
     methods: {
-      login (evt) {
-        const that = this
-        if (!that.isLoggingIn) {
-          that.isLoggingIn = true
-          if (that.loginFormData.username.trim() === '') {
-
+      initAction () {
+        let _type = this.$route.query.t
+        let _action = this.$route.name.toLowerCase()
+        if (_type) {
+          switch (String(_type)) {
+            case 'r':
+            case '2':
+              _action = 'registry'
+              break
+            default:
+              break
+          }
+        }
+        return _action
+      },
+      async login () {
+        if (!this.isLoggingIn) {
+          this.isLoggingIn = true
+          let loginData = await this.$store.dispatch(types.AJAX2, {
+            baseUrl: this.requestInfo.baseUrl,
+            url: this.requestInfo.login,
+            data: this.loginFormData
+          })
+          this.isLoggingIn = false
+          if (loginData.status === 200) {
+            // 登录成功
+            this.$vux.toast.show({
+              type: 'text',
+              text: '登录成功'
+            })
+            this.$store.commit(types.CACHE_LOGIN_DATA, loginData.data)
+            this.$router.back()
+          } else {
+            // 登录失败
+            utils.storage.removeItem(this.$store.state.localStorageKeys.userInfo)
+            this.$store.commit(types.CACHE_LOGIN_DATA, {})
+            this.$vux.toast.show({
+              type: 'text',
+              text: loginData.message || '登录失败'
+            })
+          }
+        }
+      },
+      async registry () {
+        if (!this.isRegistering) {
+          this.isRegistering = true
+          let registryData = await this.$store.dispatch(types.AJAX2, {
+            baseUrl: this.requestInfo.baseUrl,
+            url: this.requestInfo.registry,
+            data: {
+              phonenum: this.registryFormData.phonenum,
+              password: this.registryFormData.password
+            }
+          })
+          this.isRegistering = false
+          if (registryData.status === 200) {
+            // 注册成功
+            this.$vux.toast.show({
+              type: 'text',
+              text: '注册成功'
+            })
+            this.action = 'login'
+          } else {
+            // 注册失败
+            this.$vux.toast.show({
+              type: 'text',
+              text: registryData.message || '注册失败'
+            })
           }
         }
       },
@@ -248,7 +316,8 @@
     components: {
       Group,
       XInput,
-      XButton
+      XButton,
+      InlineLoading
     }
   }
 </script>
