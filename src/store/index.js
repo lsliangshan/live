@@ -82,7 +82,11 @@ const store = new Vuex.Store({
       baseUrl: 'http://192.168.189.89:3000',
       login: '/Zpm/user/login',
       registry: '/Zpm/user/register',
-      updateUserInfo: '/Zpm/user/updateUserInfo' // 更新个人信息
+      updateUserInfo: '/Zpm/user/updateUserInfo', // 更新个人信息
+      getAllArticle: '/Zpm/article/getAll', // 获取文章列表，不需要登录状态
+      viewArticle: '/Zpm/article/content', // 根据文章id查询文章内容
+      getAllComments: '/Zpm/comment/list', // 分页获取评论
+      sendComment: '/Zpm/comment/comment' // 发表评论
     },
     localStorageKeys: {
       userInfo: 'user-info'

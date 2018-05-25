@@ -207,7 +207,6 @@
         }
         this.scrollOptions = Object.assign({}, OPTIONS, this.options)
         this.scroll = new BScroll(this.$refs.wrapper, this.scrollOptions)
-
         this.$emit('initialed', this.scroll)
 
         if (this.listenScroll) {
@@ -367,7 +366,7 @@
   }
   .list-wrapper .scroll-content {
     position: relative;
-    height: 100%;
+    /*height: 100%;*/
     z-index: 1;
   }
   .list-wrapper .scroll-content .list-content {
