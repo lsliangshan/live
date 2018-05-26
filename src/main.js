@@ -12,6 +12,7 @@ import mixins from './mixins'
 import VueNavigation from 'vue-navigation'
 import utils from './utils/index'
 import { WechatPlugin, AjaxPlugin, ToastPlugin } from 'vux'
+require('./directives/index')
 
 Vue.use(WechatPlugin)
 

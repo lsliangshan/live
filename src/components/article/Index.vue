@@ -11,19 +11,28 @@
                  @pullingDown="onPullingDown"
                  @pullingUp="onPullingUp"
       >
+        <div class="gap_24" style="background-color: #f8f8f8;"></div>
         <div class="article_body">
-          <div class="article_item"></div>
-          <div class="article_item"></div>
-          <div class="article_item"></div>
-          <div class="article_item"></div>
-          <div class="article_item"></div>
-          <div class="article_item"></div>
-          <div class="article_item"></div>
-          <div class="article_item"></div>
-          <div class="article_item"></div>
-          <div class="article_item"></div>
-          <div class="article_item"></div>
-          <div class="article_item"></div>
+          <div class="article_item" v-for="(article, index) in articles" :key="index">
+            <div class="article_item_left" :style="{width: calcToRealPx(150) + 'px', height: '100%'}">
+              <div class="article_item_left_avatar_container" :style="{width: calcToRealPx(150) + 'px', height: calcToRealPx(150) + 'px'}">
+                <img class="avatar_img" :default-src="assets.maleAvatar" :src="article.zpm_user.headIcon">
+              </div>
+            </div>
+            <div class="article_item_right" :style="{width: calcToRealPx(580) + 'px'}">
+              <div class="article_item_right_top_container" :style="{height: calcToRealPx(100) + 'px'}">
+                <div class="username_container" v-text="article.zpm_user.nickname"></div>
+                <div class="member_level_container">Vue使用者</div>
+              </div>
+              <div class="article_item_right_bottom_container">
+                <div class="article_item_main_container">
+                  <div class="article_item_title" v-text="article.title"></div>
+                  <div class="article_item_content markdown-body" v-ellipsis:50="article.content">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </ls-scroll>
     </div>
@@ -47,14 +56,91 @@
   .article_item_body_wrapper {
     position: fixed;
     width: 100%;
+    background-color: #F8F8F8;
     height: calc(100% - 44px - 53px);
     /*overflow: hidden;*/
   }
   .article_item {
     width: 100%;
-    height: 200px;
-    background-color: #f5f5f5;
+    /*min-height: 200px;*/
+    padding: 8px 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    background-color: #ffffff;
     margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .article_item_left {
+    display: inline-flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .article_item_left_avatar_container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .avatar_img {
+    width: 90%;
+    height: 90%;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  .article_item_right {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .article_item_right_top_container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .username_container {
+    width: 100%;
+    height: 50%;
+    font-size: 14px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+  }
+  .member_level_container {
+    width: 100%;
+    height: 40%;
+    font-size: 12px;
+    color: #999999;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  .article_item_right_bottom_container {
+    width: 100%;
+  }
+  .article_item_main_container {
+    width: calc(100% - 20px);
+    padding: 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    background-color: #F8F8F8;
+  }
+  .article_item_title {
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    overflow: hidden;
+  }
+  .article_item_content {
+    font-size: 13px;
+    color: #999999;
   }
 </style>
 <script>
@@ -64,6 +150,7 @@
     data () {
       return {
         requestInfo: this.$store.state.requestInfo,
+        assets: this.$store.state.assets,
         articles: [],
         pageIndex: 1,
         pageSize: 20,

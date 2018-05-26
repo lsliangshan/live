@@ -81,6 +81,7 @@
 
 <style lang="less">
   @import '~vux/src/styles/reset.less';
+  @import "./assets/css/markdown.css";
   * {
     margin: 0;
     padding: 0;
