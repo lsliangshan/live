@@ -138,6 +138,10 @@
     width: 100%;
     height: 24px;
   }
+  .gap_30 {
+    width: 100%;
+    height: 30px;
+  }
   .pen {
     pointer-events: none;
   }
@@ -178,5 +182,16 @@
   }
   .fade-enter, .fade-leave-active {
     opacity: 0;
+  }
+
+  .comment_input .weui-textarea {
+    min-height: 30px;
+    max-height: 120px;
+    padding-top: 4px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    /*line-height: 30px;*/
+    background-color: transparent;
   }
 </style>

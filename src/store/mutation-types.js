@@ -40,6 +40,8 @@ export const UPDATE_LOADING_STATUS = 'UPDATE_LOADING_STATUS'
 // 缓存登录信息
 export const CACHE_LOGIN_DATA = 'CACHE_LOGIN_DATA'
 
+export const SET_COMMENTS = 'SET_COMMENTS'
+
 // >>>> actions:
 
 // 登录1

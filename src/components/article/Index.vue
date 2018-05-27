@@ -25,9 +25,9 @@
                 <div class="member_level_container">Vue使用者</div>
               </div>
               <div class="article_item_right_bottom_container">
-                <div class="article_item_main_container">
-                  <div class="article_item_title" v-text="article.title"></div>
-                  <div class="article_item_content markdown-body" v-ellipsis:50="article.content">
+                <div class="article_item_main_container" :data-article-id="article.uuid.replace(/^([a-zA-Z0-9]*).*/, '$1')" @click="gotoArticleDetail">
+                  <div class="article_item_title pen" v-text="article.title"></div>
+                  <div class="article_item_content pen" v-ellipsis:50="article.content">
                   </div>
                 </div>
               </div>
@@ -162,7 +162,7 @@
             threshold: 0,
             txt: {
               more: '加载更多',
-              noMore: '<p>这就到底了？</p><p>文章太少，我<a href="http://192.168.189.89">去写</a>一个</p><p>asf</p><p>as0000</p>'
+              noMore: '<p>这就到底了？</p><p>文章太少，我<a href="/publish/index">去写</a>一个</p>'
             }
           }
         }
@@ -226,6 +226,14 @@
         } else {
           this.$refs[this.scrollRef].forceUpdate()
         }
+      },
+      gotoArticleDetail (e) {
+        this.$router.push({
+          name: 'ArticleDetail',
+          params: {
+            aid: e.target.dataset.articleId
+          }
+        })
       }
     },
     components: {

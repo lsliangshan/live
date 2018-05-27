@@ -78,8 +78,14 @@ const store = new Vuex.Store({
       maleAvatar: '/static/images/avatar_male_1.jpg',
       femaleAvatar: '/static/images/avatar_female_1.jpg'
     },
+    article: {
+      comments: {}
+    },
+    events: {
+      frontArticleCloseCommentList: 'front-article-close-comment-list'
+    },
     requestInfo: {
-      baseUrl: 'http://192.168.189.89:3000',
+      baseUrl: 'http://192.168.0.104:3000',
       login: '/Zpm/user/login',
       registry: '/Zpm/user/register',
       updateUserInfo: '/Zpm/user/updateUserInfo', // 更新个人信息

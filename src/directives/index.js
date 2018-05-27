@@ -37,7 +37,7 @@ import Vue from 'vue'
 import marked from 'marked'
 
 Vue.directive('md', {
-  bind (el, binding, vnode) {
+  componentUpdated (el, binding, vnode) {
     let _len = (binding.arg ? Number(binding.arg) : 0)
     let _val = binding.value ? binding.value : ''
     if (_len > 0) {

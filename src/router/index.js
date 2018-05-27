@@ -28,6 +28,20 @@ export const ProfilePages = [
   }
 ]
 
+export const ArticlePages = [
+  {
+    path: '/article/detail/:aid',
+    name: 'ArticleDetail',
+    meta: {
+      title: '文章详情',
+      index: 2
+    },
+    components: {
+      HomeRouter: () => import('../components/article/Detail.vue')
+    }
+  }
+]
+
 export const HomeRouter = {
   path: '/',
   name: 'Home',
@@ -117,6 +131,7 @@ export default new Router({
   routes: [
     HomeRouter,
     ...ProfilePages,
+    ...ArticlePages,
     ...LoginRouter,
     page404
   ]

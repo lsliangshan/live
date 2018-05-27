@@ -48,5 +48,8 @@ export const mutations = {
     } else {
       utils.storage.removeItem(state.localStorageKeys.userInfo)
     }
+  },
+  [types.SET_COMMENTS] (state, data) {
+    state.article.comments = Object.assign({}, state.article.comments, data)
   }
 }
