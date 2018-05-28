@@ -1,6 +1,8 @@
 <template>
   <div class="article_list_container">
-    <div class="article_header_container"></div>
+    <div class="article_header_container">
+
+    </div>
     <div class="article_content_container">
       <ls-scroll class="article_item_body_wrapper"
                  :ref="scrollRef"
@@ -11,7 +13,7 @@
                  @pullingDown="onPullingDown"
                  @pullingUp="onPullingUp"
       >
-        <div class="gap_24" style="background-color: #f8f8f8;"></div>
+        <div class="gap_12" style="background-color: #f8f8f8;"></div>
         <div class="article_body">
           <div class="article_item" v-for="(article, index) in articles" :key="index">
             <div class="article_item_left" :style="{width: calcToRealPx(150) + 'px', height: '100%'}">
@@ -45,19 +47,19 @@
   }
   .article_header_container {
     width: 100%;
-    height: 44px;
+    height: 53px;
     background-color: #FFFFFF;
   }
   .article_content_container {
     width: 100%;
-    height: calc(100% - 44px);
+    height: calc(100% - 53px);
     background-color: #ffffff;
   }
   .article_item_body_wrapper {
     position: fixed;
     width: 100%;
     background-color: #F8F8F8;
-    height: calc(100% - 44px - 53px);
+    height: calc(100% - 53px - 53px);
     /*overflow: hidden;*/
   }
   .article_item {

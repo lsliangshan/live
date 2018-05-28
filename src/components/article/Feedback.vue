@@ -304,10 +304,6 @@
         this.showFeedbackBg = true
         this.textareaFocused = true
 //        this.$refs[this.commentRef].$refs.textarea.style.bottom = '100px'
-        this.$vux.toast.show({
-          type: 'text',
-          text: 'focus'
-        })
       }
     },
     watch: {
