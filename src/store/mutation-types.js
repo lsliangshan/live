@@ -42,6 +42,8 @@ export const CACHE_LOGIN_DATA = 'CACHE_LOGIN_DATA'
 
 export const SET_COMMENTS = 'SET_COMMENTS'
 
+export const CACHE_ALL_USERS = 'CACHE_ALL_USERS'
+
 // >>>> actions:
 
 // 登录1

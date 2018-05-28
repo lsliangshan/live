@@ -194,4 +194,11 @@
     /*line-height: 36px;*/
     background-color: transparent;
   }
+
+  .search_container .weui-search-bar {
+    padding: 13px 10px;
+  }
+  .search_container .weui-search-bar:after {
+    border-bottom: none;
+  }
 </style>

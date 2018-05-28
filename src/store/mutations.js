@@ -51,5 +51,8 @@ export const mutations = {
   },
   [types.SET_COMMENTS] (state, data) {
     state.article.comments = Object.assign({}, state.article.comments, data)
+  },
+  [types.CACHE_ALL_USERS] (state, data) {
+    state.allUsers = data.users
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="article_comment_container" v-if="rootComment ? (comment.rid === '') : (comment.rid !== '')">
     <div class="article_comment_left_container">
-      <img class="article_comment_head_icon_img" :src="comment.headIcon || '/static/images/avatar_male_1.jpg'"/>
+      <img class="article_comment_head_icon_img" :src="comment.headIcon || assets.maleAvatar"/>
     </div>
     <div class="article_comment_main_container">
       <div class="article_comment_nickname_container">
@@ -211,6 +211,7 @@
     },
     data () {
       return {
+        assets: this.$store.state.assets,
         listSubCommentsCount: 5 // 子评论最多显示的条数
 //        subComments: []
       }

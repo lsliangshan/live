@@ -84,10 +84,12 @@ const store = new Vuex.Store({
     events: {
       frontArticleCloseCommentList: 'front-article-close-comment-list'
     },
+    allUsers: [],
     requestInfo: {
-      baseUrl: 'http://192.168.0.104:3000',
+      baseUrl: 'http://192.168.189.89:3000',
       login: '/Zpm/user/login',
       registry: '/Zpm/user/register',
+      queryUsers: '/Zpm/user/queryUsers', // 查询用户列表，模糊查询。不需要管理员权限
       updateUserInfo: '/Zpm/user/updateUserInfo', // 更新个人信息
       getAllArticle: '/Zpm/article/getAll', // 获取文章列表，不需要登录状态
       viewArticle: '/Zpm/article/content', // 根据文章id查询文章内容
