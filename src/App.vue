@@ -185,13 +185,13 @@
   }
 
   .comment_input .weui-textarea {
-    min-height: 30px;
+    min-height: 36px;
     max-height: 120px;
-    padding-top: 4px;
+    padding-top: 7px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    /*line-height: 30px;*/
+    /*line-height: 36px;*/
     background-color: transparent;
   }
 </style>

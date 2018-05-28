@@ -33,7 +33,9 @@
               <div class="article_comment_like_detail_container disabled" v-if="!comment.like || JSON.parse(comment.like).length < 1">暂无人喜欢过</div>
               <div class="article_comment_like_detail_container" v-if="comment.like && JSON.parse(comment.like).length > 0">{{JSON.parse(comment.like).length}} 人喜欢过</div>
               <div class="article_comment_like" :class="{active: comment.like && JSON.parse(comment.like).length > 0}">
-                <!--<Icon :type="comment.like && JSON.parse(comment.like).length > 0 ? 'ios-heart' : 'ios-heart-outline'" size="14" style="margin-right: 5px;"></Icon>-->
+                <svg class="like_icon">
+                  <use xlink:href="#heart"></use>
+                </svg>
                 <span v-text="comment.like && JSON.parse(comment.like).length > 0 ? JSON.parse(comment.like).length : '喜欢'"></span>
               </div>
             </div>
@@ -41,7 +43,7 @@
         </div>
       </div>
       <p class="sub_comments_title">{{subComments.length < 1 ? '暂无评论' : '全部评论'}}</p>
-      <div class="comment_sub_item" v-for="(c, index) in subComments" :key="c.uuid">
+      <div class="comment_sub_item" v-for="(c, index) in subComments" :key="index">
         <comment :root-comment="false" :author="author" :comment="c" @view="commentSomebody"></comment>
         <!--<comment :root-comment="false" :author="author" :comments="comments" :comment="c" @view="commentSomebody"></comment>-->
       </div>
@@ -170,6 +172,15 @@
     -o-transition: all .2s ease-in-out;
     transition: all .2s ease-in-out;
   }
+  svg.like_icon {
+    margin-right: 5px;
+    width: 14px;
+    height: 14px;
+    fill: #c8c8c8;
+  }
+  .article_comment_like.active svg.like_icon {
+    fill: red;
+  }
   .article_comment_content_container {
     width: 100%;
     padding: 5px 0;
@@ -247,16 +258,6 @@
         return this.findSubComments(this.$store.state.article.comments[this.comment.aid])
       }
     },
-    created () {
-    },
-    watch: {
-//      'comment': function () {
-//        this.subComments = this.findSubComments()
-//      },
-//      'comments': function () {
-//        this.subComments = this.findSubComments()
-//      }
-    },
     methods: {
       findSubComments (comments) {
         if (!comments) {
@@ -281,7 +282,7 @@
       },
       cacheArticleComments (comments) {
         let _articleComments = {}
-        _articleComments[this.comment.aid] = JSON.parse(JSON.stringify(comments))
+        _articleComments[this.comment.aid] = Object.assign([], comments)
         this.$store.commit(types.SET_COMMENTS, _articleComments)
       },
       commentSomebody (data) {

@@ -13,12 +13,15 @@
         </div>
         <div class="article_comment_like" :class="{active: comment.like && JSON.parse(comment.like).length > 0}">
           <!--<Icon :type="comment.like && JSON.parse(comment.like).length > 0 ? 'ios-heart' : 'ios-heart-outline'" size="14" style="margin-right: 5px;"></Icon>-->
+          <svg class="like_icon">
+            <use xlink:href="#heart"></use>
+          </svg>
           <span v-text="comment.like && JSON.parse(comment.like).length > 0 ? JSON.parse(comment.like).length : '喜欢'"></span>
         </div>
       </div>
       <div class="article_comment_content_container" @click="chooseComment">
         <span v-html="comment.content.replace(/\n/g, '<br>')"></span>
-        <span v-if="comment.parent && comment.parent.content"><a href="javascript: void(0)">//@{{comment.parent.nickname}}: </a>{{comment.parent.content.substring(0, 100) + '...'}}</span>
+        <span v-if="comment.parent && comment.parent.content"><a href="javascript: void(0)">//@{{comment.parent.nickname}}: </a><span>{{comment.parent.content.length > 100 ? (comment.parent.content.substring(0, 100) + '...') : comment.parent.content.substring(0, 100)}}</span></span>
       </div>
       <div class="article_comment_feedback_container" @click="chooseComment">
         {{comment.postTime | time}} <a class="feedback_text" href="javascript: void(0)">{{subComments.length > 0 ? subComments.length : ''}} 回复</a>
@@ -81,7 +84,7 @@
     justify-content: space-between;
   }
   .article_comment_nickname {
-    width: calc(~"100% - 48px");
+    width: calc(~"100% - 60px");
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -118,6 +121,15 @@
     -ms-transition: all .2s ease-in-out;
     -o-transition: all .2s ease-in-out;
     transition: all .2s ease-in-out;
+  }
+  svg.like_icon {
+    margin-right: 5px;
+    width: 14px;
+    height: 14px;
+    fill: #c8c8c8;
+  }
+  .article_comment_like.active svg.like_icon {
+    fill: red;
   }
   .article_comment_content_container {
     width: 100%;

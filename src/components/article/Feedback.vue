@@ -1,33 +1,40 @@
 <template>
   <div class="article_feedback_container">
     <div class="feedback_mobile" v-if="!isPc">
-      <div class="bottom_comment_placement" v-if="!commentShown">
-        <div type="text" class="comment_input_placement" :ref="writeCommentRef" @click="showComment" v-if="loginInfo.token">写评论...</div>
-        <div type="text" class="comment_input_placement disabled" v-else>写评论...</div>
-        <div class="send_comment_btn disabled">发布</div>
-        <div class="disable_placement" v-if="!loginInfo.token"><a href="javascript: void(0)" @click="gotoLogin">登录</a>后才可以评论</div>
-      </div>
+      <!--<div class="bottom_comment_placement" v-if="!commentShown">-->
+        <!--<div type="text" class="comment_input_placement" :ref="writeCommentRef" @click="showComment" v-if="loginInfo.token">写评论...</div>-->
+        <!--<div type="text" class="comment_input_placement disabled" v-else>写评论...</div>-->
+        <!--<div class="send_comment_btn disabled">发布</div>-->
+        <!--<div class="disable_placement" v-if="!loginInfo.token"><a href="javascript: void(0)" @click="gotoLogin">登录</a>后才可以评论</div>-->
+      <!--</div>-->
 
-      <div class="comment_wrapper" :class="{shown: commentShown}" @click.self="hideComment">
-        <div class="bottom_comment_container">
-          <x-textarea :placeholder="placeholder || '写评论...'"
-                      :autosize="true"
-                      :rows="1"
-                      v-model="comment"
-                      :ref="commentRef"
-                      @blur="hideComment"
-                      class="comment_input"
-          ></x-textarea>
-          <!--<Input type="textarea"-->
-          <!--:autosize="{minRows: 1, maxRows: 4}"-->
-          <!--:ref="commentRef"-->
-          <!--class="comment_input"-->
-          <!--v-model="comment"-->
-          <!--:placeholder="placeholder || '写评论...'"-->
-          <!--@on-blur="hideComment"-->
-          <!--/>-->
-          <!--<textarea wrap="soft" :ref="commentRef" autocomplete="off" spellcheck="false" placeholder="写评论..." rows="2" class="ivu-input" style="height: 31px; min-height: 31px; max-height: 94px;"></textarea>-->
-          <div class="send_comment_btn" :class="{active: comment.trim().length > 0}" @click="sendComment">发布</div>
+      <div class="comment_wrapper" ref="commentWrapper" :class="{clickable: showFeedbackBg}" @click.self="hideComment">
+        <div class="bottom_comment_container" ref="bottomCommentContainer">
+          <div class="bottom_comment_inner">
+            <x-textarea :placeholder="placeholder || '写评论...'"
+                        :autosize="true"
+                        :rows="1"
+                        :height="textareaHeight"
+                        v-model="comment"
+                        :ref="commentRef"
+                        @on-blur="hideComment"
+                        @on-focus="focusTextarea"
+                        class="comment_input"
+            ></x-textarea>
+            <!--<Input type="textarea"-->
+            <!--:autosize="{minRows: 1, maxRows: 4}"-->
+            <!--:ref="commentRef"-->
+            <!--class="comment_input"-->
+            <!--v-model="comment"-->
+            <!--:placeholder="placeholder || '写评论...'"-->
+            <!--@on-blur="hideComment"-->
+            <!--/>-->
+            <!--<textarea wrap="soft" :ref="commentRef" autocomplete="off" spellcheck="false" placeholder="写评论..." rows="2" class="ivu-input" style="height: 31px; min-height: 31px; max-height: 94px;"></textarea>-->
+            <!--<div class="send_comment_btn" :class="{active: comment.trim().length > 0}" @click="sendComment">发布</div>-->
+            <x-button type="primary" class="send_comment_btn" text="发布" @click.native="sendComment" :disabled="comment.trim().length == 0"></x-button>
+          </div>
+          <div class="textarea_blank_container" v-if="textareaFocused"></div>
+          <div class="disable_placement" v-if="!loginInfo.token"><a href="javascript: void(0)" @click="gotoLogin">登录</a>后才可以评论</div>
         </div>
       </div>
     </div>
@@ -70,6 +77,7 @@
     width: 100%;
     height: 48px;
     font-size: 13px;
+    background-color: rgba(255, 255, 255, .8);
     opacity: 1;
     display: flex;
     align-items: center;
@@ -102,20 +110,24 @@
     width: 100%;
     height: 100%;
     background-color: transparent;
-    -webkit-transform: translate(0, 100%);
-    -moz-transform: translate(0, 100%);
-    -ms-transform: translate(0, 100%);
-    -o-transform: translate(0, 100%);
-    transform: translate(0, 100%);
-    -webkit-transition: all .2s ease-in-out;
-    -moz-transition: all .2s ease-in-out;
-    -ms-transition: all .2s ease-in-out;
-    -o-transition: all .2s ease-in-out;
-    transition: all .2s ease-in-out;
-    transition-delay: 0.1s;
+    /*-webkit-transform: translate(0, 100%);*/
+    /*-moz-transform: translate(0, 100%);*/
+    /*-ms-transform: translate(0, 100%);*/
+    /*-o-transform: translate(0, 100%);*/
+    /*transform: translate(0, 100%);*/
+    /*-webkit-transition: all .2s ease-in-out;*/
+    /*-moz-transition: all .2s ease-in-out;*/
+    /*-ms-transition: all .2s ease-in-out;*/
+    /*-o-transition: all .2s ease-in-out;*/
+    /*transition: all .2s ease-in-out;*/
+    /*transition-delay: 0.1s;*/
+    pointer-events: none;
     display: flex;
     align-items: center;
     justify-content: flex-end;
+  }
+  .comment_wrapper.clickable {
+    pointer-events: auto;
   }
   .comment_wrapper.shown {
     -webkit-transform: translate(0, 0%);
@@ -128,20 +140,38 @@
     position: absolute;
     width: 100%;
     min-height: 48px;
+    pointer-events: auto;
     bottom: 0;
     left: 0;
+    background-color: #ffffff;
+    border-top: 1px solid #f5f5f5;
+  }
+  .bottom_comment_inner {
+    width: 100%;
+    min-height: 48px;
     padding: 5px 10px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    background-color: #ffffff;
-    border-top: 1px solid #f5f5f5;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
   }
+  .textarea_blank_container {
+    width: 100%;
+    background-color: #ffffff;
+    height: 80px;
+  }
+  .bottom_comment_container.active {
+    /*bottom: 80px;*/
+    /*background-color: #c8c8c8;*/
+  }
+  .bottom_comment_container.active .send_comment_btn {
+    font-size: 16px;
+    line-height: 30px;
+  }
   .comment_input {
-    width: calc(100% - 50px);
+    width: calc(100% - 80px);
     /*height: 30px;*/
     border: none;
     border-radius: 4px;
@@ -163,31 +193,17 @@
     /*border: none;*/
   /*}*/
   .send_comment_btn {
-    position: absolute;
-    right: 0;
     width: 60px;
+    height: 36px;
+    border: none;
     font-size: 14px;
-    color: #888;
-    padding: 5px 8px 10px 8px;
-    height: 100%;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    display: inline-flex;
-    align-items: flex-end;
-    justify-content: center;
-  }
-  .send_comment_btn.active {
-    color: #2d8cf0;
-    font-weight: bold;
-  }
-  .send_comment_btn.disabled {
-    opacity: .3;
+    padding: 0;
+    margin: 0;
   }
 </style>
 <script>
   import * as types from '../../store/mutation-types'
-  import { XTextarea } from 'vux'
+  import { XTextarea, XButton } from 'vux'
   export default {
     name: 'Feedback',
     props: {
@@ -222,7 +238,10 @@
         writeCommentRef: 'write-comment-ref',
         commentFocus: false,
         eventHub: this.$store.state.eventHub,
-        events: this.$store.state.events
+        events: this.$store.state.events,
+        showFeedbackBg: false,
+        textareaHeight: 36,
+        textareaFocused: false
       }
     },
     computed: {
@@ -232,25 +251,17 @@
     },
     created () {
       const that = this
-      this.$nextTick(() => {
-        this.focus && this.loginInfo.token && this.showComment()
-      })
       window.onresize = function () {
         that.isPc = !navigator.userAgent.match(/(iphone)|(android)/i)
       }
     },
     methods: {
-      showComment () {
-        this.commentShown = true
-        setTimeout(() => {
-          this.$refs[this.commentRef].$refs.textarea.focus()
-        }, 100)
-      },
       hideComment () {
-        this.$refs[this.commentRef].$refs.textarea.blur()
-//        this.commentFocus = false
+        this.textareaFocused = false
+        this.showFeedbackBg = false
         this.commentShown = false
         this.$emit('end-input')
+        this.$refs[this.commentRef].$refs.textarea.style.height = '36px'
         setTimeout(() => {
           if (this.rid !== '') {
             this.comment = ''
@@ -269,7 +280,7 @@
         let articleId = this.aid
         let _commentObj = {
           aid: articleId,
-          content: this.comment,
+          content: this.comment.trim().replace(/([\n\r]){2,}/g, '$1'),
           nickname: this.loginInfo.nickname || '',
           headIcon: this.loginInfo.headIcon || '',
           pid: this.pid || '',
@@ -288,23 +299,20 @@
           this.$emit('feedback', commentData.data)
           this.hideComment()
         }
-      }
-    },
-    watch: {
-      'focus': function (val) {
-        if (val && this.loginInfo.token) {
-          // setTimeout(() => {
-          //   this.showComment()
-          // }, 500)
-          // console.log('>>>>.', this.$refs)
-          this.$refs[this.writeCommentRef].click()
-        } else {
-          this.hideComment()
-        }
+      },
+      focusTextarea () {
+        this.showFeedbackBg = true
+        this.textareaFocused = true
+//        this.$refs[this.commentRef].$refs.textarea.style.bottom = '100px'
+        this.$vux.toast.show({
+          type: 'text',
+          text: 'focus'
+        })
       }
     },
     components: {
-      XTextarea
+      XTextarea,
+      XButton
     }
   }
 </script>

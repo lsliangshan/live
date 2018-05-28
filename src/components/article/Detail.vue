@@ -29,7 +29,7 @@
       <div class="gap_30"></div>
     </ls-scroll>
 
-    <div class="bottom_feedback" :style="{height: '48px'}">
+    <div class="bottom_feedback" :style="{height: '48px'}" v-if="!showCommentList">
       <feedback :aid="article.uuid" :pid="''" :rid="''" :focus="false" @feedback="addComment"></feedback>
     </div>
     <div class="comment_detail_list_container" :class="{shown: showCommentList}">
