@@ -310,6 +310,17 @@
         })
       }
     },
+    watch: {
+      'focus': function (val) {
+        if (val && this.loginInfo.token) {
+          setTimeout(() => {
+            this.$refs[this.commentRef].$refs.textarea.focus()
+          }, 100)
+        } else {
+          this.hideComment()
+        }
+      }
+    },
     components: {
       XTextarea,
       XButton

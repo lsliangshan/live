@@ -4,7 +4,7 @@
       <div class="gap_12"></div>
       <div class="person_info_container" data-path="/profile/detail" @click="navTo">
         <div class="avatar_container pen" :style="{width: calcToRealPx(150) + 'px', height: calcToRealPx(150) + 'px'}">
-          <img class="avatar_img" :default-src="assets.maleAvatar" :src="loginInfo.headIcon">
+          <img class="avatar_img" :src="loginInfo.headIcon || (loginInfo.gender == 1 ? assets.maleAvatar : assets.femaleAvatar)">
         </div>
         <div class="center_info_container pen" :style="{width: calcToRealPx(450) + 'px', height: calcToRealPx(150) + 'px'}">
           <div class="nickname_container" v-text="loginInfo.nickname || ''"></div>

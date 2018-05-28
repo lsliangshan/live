@@ -8,7 +8,7 @@
         </div>
         <div class="profile_detail_item_value pen" :style="{width: calcToRealPx(300) + 'px', height: calcToRealPx(150) + 'px'}">
           <div class="avatar_container pen" :style="{width: calcToRealPx(150) + 'px', height: calcToRealPx(150) + 'px'}">
-            <img class="avatar_img" :default-src="assets.maleAvatar" :src="loginInfo.headIcon">
+            <img class="avatar_img" :src="loginInfo.headIcon || (loginInfo.gender == 1 ? assets.maleAvatar : assets.femaleAvatar)">
           </div>
           <x-icon type="ios-arrow-right" size="16" class="icon_color_normal"></x-icon>
         </div>
@@ -310,6 +310,7 @@
             text: '修改成功'
           })
           this.hasChanged = false
+          this.cachePersonInfo = Object.assign({}, this.personInfo)
           this.$store.commit(types.CACHE_LOGIN_DATA, updateData.data)
         } else {
           this.$vux.toast.show({
