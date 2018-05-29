@@ -94,7 +94,8 @@ const store = new Vuex.Store({
       getAllArticle: '/Zpm/article/getAll', // 获取文章列表，不需要登录状态
       viewArticle: '/Zpm/article/content', // 根据文章id查询文章内容
       getAllComments: '/Zpm/comment/list', // 分页获取评论
-      sendComment: '/Zpm/comment/comment' // 发表评论
+      sendComment: '/Zpm/comment/comment', // 发表评论
+      searchArticle: '/Zpm/article/searchArticle' // 按title或content搜索文章
     },
     localStorageKeys: {
       userInfo: 'user-info'

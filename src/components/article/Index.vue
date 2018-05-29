@@ -23,7 +23,8 @@
       >
         <div class="gap_12" style="background-color: #f8f8f8;"></div>
         <div class="article_body">
-          <div class="article_item" v-for="(article, index) in articles" :key="index" v-if="article.zpm_user.nickname && (article.zpm_user.nickname.indexOf(searchText.replace(/^@/, '')) > -1)">
+          <div class="article_item" v-for="(article, index) in articles" :key="index"
+               v-if="((searchText.substring(0, 1) === '@') && article.zpm_user.nickname && (article.zpm_user.nickname.indexOf(searchText.replace(/^@/, '')) > -1)) || (searchText.substring(0, 1) !== '@')">
             <div class="article_item_left" :style="{width: calcToRealPx(150) + 'px', height: '100%'}">
               <div class="article_item_left_avatar_container" :style="{width: calcToRealPx(150) + 'px', height: calcToRealPx(150) + 'px'}">
                 <img class="avatar_img" :src="article.zpm_user.headIcon || (loginInfo.gender == 1 ? assets.maleAvatar : assets.femaleAvatar)">
@@ -259,8 +260,24 @@
           }
         })
       },
-      doSearch () {
-        this.$refs.search.setBlur()
+      async doSearch () {
+//        this.$refs.search.setBlur()
+        if (['@', '#'].indexOf(this.searchText.trim().substring(0, 1)) < 0) {
+          await this.searchArticle({
+            searchType: 'title',
+            searchValue: this.searchText.trim()
+          })
+        }
+      },
+      async searchArticle (args) {
+        let searchData = await this.$store.dispatch(types.AJAX, {
+          url: this.requestInfo.searchArticle,
+          data: {
+            searchType: args.searchType,
+            searchValue: args.searchValue
+          }
+        })
+        console.log('>>>>>>>searchData: ', searchData)
       },
       async getAllUsers (username) {
         let _queryData = await this.$store.dispatch(types.AJAX, {
@@ -302,6 +319,7 @@
         }
         switch (_searchText.trim().substring(0, 1)) {
           case '@':
+            // 按用户昵称搜索
             this.searchResults = this.formatUsersForSearch()
             break
           default:
