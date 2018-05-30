@@ -44,6 +44,8 @@ export const SET_COMMENTS = 'SET_COMMENTS'
 
 export const CACHE_ALL_USERS = 'CACHE_ALL_USERS'
 
+export const CACHE_ALL_ARTICLE_TAGS = 'CACHE_ALL_ARTICLE_TAGS'
+
 // >>>> actions:
 
 // 登录1

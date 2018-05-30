@@ -54,5 +54,8 @@ export const mutations = {
   },
   [types.CACHE_ALL_USERS] (state, data) {
     state.allUsers = data.users
+  },
+  [types.CACHE_ALL_ARTICLE_TAGS] (state, data) {
+    state.allArticleTags = data.tags
   }
 }

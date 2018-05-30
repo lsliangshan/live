@@ -81,6 +81,7 @@ const store = new Vuex.Store({
     article: {
       comments: {}
     },
+    allArticleTags: [],
     events: {
       frontArticleCloseCommentList: 'front-article-close-comment-list'
     },
@@ -95,7 +96,8 @@ const store = new Vuex.Store({
       viewArticle: '/Zpm/article/content', // 根据文章id查询文章内容
       getAllComments: '/Zpm/comment/list', // 分页获取评论
       sendComment: '/Zpm/comment/comment', // 发表评论
-      searchArticle: '/Zpm/article/searchArticle' // 按title或content搜索文章
+      searchArticle: '/Zpm/article/search', // 按title或content搜索文章
+      getAllTags: '/Zpm/tag/getAll' // 获取 所有 tag
     },
     localStorageKeys: {
       userInfo: 'user-info'

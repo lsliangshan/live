@@ -33,7 +33,7 @@
             <div class="article_item_right" :style="{width: calcToRealPx(580) + 'px'}">
               <div class="article_item_right_top_container" :style="{height: calcToRealPx(100) + 'px'}">
                 <div class="username_container" v-text="article.zpm_user.nickname"></div>
-                <div class="member_level_container">Vue使用者</div>
+                <div class="member_level_container">{{filterTags(article.tag)}}</div>
               </div>
               <div class="article_item_right_bottom_container">
                 <div class="article_item_main_container" :data-article-id="article.uuid.replace(/^([a-zA-Z0-9]*).*/, '$1')" @click="gotoArticleDetail">
@@ -183,6 +183,7 @@
             }
           }
         },
+        allTags: {},
         searchText: '',
         searchResults: [],
         allUsers: []
@@ -194,6 +195,7 @@
       }
     },
     async created () {
+      await this.getAllTags()
       await this.getAllArticle({
         isInit: true
       })
@@ -205,6 +207,36 @@
       }
     },
     methods: {
+      filterTags (tags) {
+        const that = this
+        console.log(tags, that.allTags)
+        return tags.replace(/(([a-zA-Z0-9]+)(;?))/g, function (item, item2, item3, item4) {
+          return (that.allTags[item3] ? that.allTags[item3].text : item3) + item4
+        })
+      },
+      async getAllTags () {
+        /**
+         * 获取所有标签
+         */
+        let allTags = await this.$store.dispatch(types.AJAX2, {
+          url: this.requestInfo.getAllTags
+        })
+        if (allTags.status === 200) {
+          this.allTags = this.formatTags(allTags.data.list)
+          this.$store.commit(types.CACHE_ALL_ARTICLE_TAGS, {
+            tags: this.allTags
+          })
+        }
+      },
+      formatTags (tags) {
+        let outTags = {}
+        for (let i = 0; i < tags.length; i++) {
+          if (tags[i].parent !== '0') {
+            outTags[tags[i].value] = tags[i]
+          }
+        }
+        return outTags
+      },
       async getAllArticle (args) {
         if (args && args.isInit) {
           this.pageIndex = 1
