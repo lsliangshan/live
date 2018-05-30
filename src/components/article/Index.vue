@@ -23,7 +23,7 @@
       >
         <div class="gap_12" style="background-color: #f8f8f8;"></div>
         <div class="article_body">
-          <div class="article_item" v-for="(article, index) in articles" :key="index"
+          <div class="article_item" v-for="(article, index) in articles" :key="article.uuid"
                v-if="((searchText.substring(0, 1) === '@') && article.zpm_user.nickname && (article.zpm_user.nickname.indexOf(searchText.replace(/^@/, '')) > -1)) || (searchText.substring(0, 1) !== '@')">
             <div class="article_item_left" :style="{width: calcToRealPx(150) + 'px', height: '100%'}">
               <div class="article_item_left_avatar_container" :style="{width: calcToRealPx(150) + 'px', height: calcToRealPx(150) + 'px'}">
@@ -169,7 +169,8 @@
         assets: this.$store.state.assets,
         articles: [],
         pageIndex: 1,
-        pageSize: 20,
+        pageSize: 2,
+        offsetCount: 0,
         totalCounts: 0,
         totalPages: 1,
         scrollRef: 'scroll-ref',
@@ -208,17 +209,70 @@
         if (args && args.isInit) {
           this.pageIndex = 1
         }
-        let _searchCondition = {
-          pageIndex: this.pageIndex,
-          pageSize: this.pageSize
+//        let _searchCondition = {
+//          pageIndex: this.pageIndex,
+//          pageSize: this.pageSize
+//        }
+//        if (args && args.hasOwnProperty('author') && args.author.trim() !== '') {
+//          _searchCondition.author = args.author
+//        }
+        let listData = {}
+        if (this.searchText && this.searchText.trim() !== '') {
+          switch (this.searchText.trim().substring(0, 1)) {
+            case '@':
+            case '#':
+              // 按 文章标签 搜索
+//              listData = await this.$store.dispatch(types.AJAX2, {
+//                url: this.requestInfo.searchArticle,
+//                data: _searchCondition
+//              })
+              listData = await this.searchArticle({
+                url: this.requestInfo.searchArticle,
+                data: {}
+              })
+              break
+            case ':':
+              // 按 文章内容 关键词搜索
+//              listData = await this.$store.dispatch(types.AJAX2, {
+//                url: this.requestInfo.searchArticle,
+//                data: {
+//                  searchType: 'content',
+//                  searchValue: this.searchText.trim().substring(1)
+//                }
+//              })
+              listData = await this.searchArticle({
+                searchType: 'content',
+                searchValue: this.searchText.trim().substring(1)
+              })
+              break
+            default:
+              // 按 标题 关键词搜索
+//              listData = await this.$store.dispatch(types.AJAX2, {
+//                url: this.requestInfo.searchArticle,
+//                data: {
+//                  searchType: 'title',
+//                  searchValue: this.searchText.trim()
+//                }
+//              })
+              listData = await this.searchArticle({
+                searchType: 'title',
+                searchValue: this.searchText.trim()
+              })
+              break
+          }
+        } else {
+//          listData = await this.$store.dispatch(types.AJAX2, {
+//            url: this.requestInfo.searchArticle,
+//            data: {
+//              searchType: 'title',
+//              searchValue: ''
+//            }
+//          })
+          listData = await this.searchArticle({
+            searchType: 'title',
+            searchValue: ''
+          })
         }
-        if (args && args.hasOwnProperty('author') && args.author.trim() !== '') {
-          _searchCondition.author = args.author
-        }
-        let listData = await this.$store.dispatch(types.AJAX2, {
-          url: this.requestInfo.getAllArticle,
-          data: _searchCondition
-        })
         if (listData.status === 200) {
           if (args && args.isInit) {
             this.articles = listData.data.list
@@ -245,7 +299,7 @@
         if (this.pageIndex < this.totalPages) {
           // 加载下一页
           this.pageIndex += 1
-          await this.list({
+          await this.getAllArticle({
             isInit: false
           })
         } else {
@@ -262,27 +316,54 @@
       },
       async doSearch () {
 //        this.$refs.search.setBlur()
-        if (['@', '#'].indexOf(this.searchText.trim().substring(0, 1)) < 0) {
-          await this.searchArticle({
-            searchType: 'title',
-            searchValue: this.searchText.trim()
-          })
+        let articlesData = {}
+        switch (this.searchText.trim().substring(0, 1)) {
+          case '@':
+            break
+          case '#':
+            break
+          case ':':
+            // 按 文章内容 关键词搜索
+            articlesData = await this.searchArticle({
+              searchType: 'content',
+              searchValue: this.searchText.trim().substring(1)
+            })
+            if (articlesData.status === 200) {
+              this.articles = articlesData.data.list
+            }
+            break
+          default:
+            // 按 标题 关键词搜索
+            articlesData = await this.searchArticle({
+              searchType: 'title',
+              searchValue: this.searchText.trim()
+            })
+            if (articlesData.status === 200) {
+              this.articles = articlesData.data.list
+            }
+            break
         }
       },
       async searchArticle (args) {
-        let searchData = await this.$store.dispatch(types.AJAX, {
+        let searchData = await this.$store.dispatch(types.AJAX2, {
           url: this.requestInfo.searchArticle,
           data: {
+            pageIndex: this.pageIndex,
+            pageSize: this.pageSize,
+            offsetCount: this.offsetCount,
             searchType: args.searchType,
             searchValue: args.searchValue
           }
         })
-        if (searchData.status === 200) {
-          // 查询成功
-          this.articles = searchData.data.list
-        } else {
-          // 查询失败
-        }
+        return searchData
+//        if (searchData.status === 200) {
+//          // 查询成功
+// //          this.articles = searchData.data.list
+//          return searchData.data
+//        } else {
+//          // 查询失败
+//          return []
+//        }
       },
       async getAllUsers (username) {
         let _queryData = await this.$store.dispatch(types.AJAX, {
