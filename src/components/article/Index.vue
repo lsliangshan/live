@@ -277,7 +277,12 @@
             searchValue: args.searchValue
           }
         })
-        console.log('>>>>>>>searchData: ', searchData)
+        if (searchData.status === 200) {
+          // 查询成功
+          this.articles = searchData.data.list
+        } else {
+          // 查询失败
+        }
       },
       async getAllUsers (username) {
         let _queryData = await this.$store.dispatch(types.AJAX, {
