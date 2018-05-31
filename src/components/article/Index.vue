@@ -6,6 +6,8 @@
               @on-submit="doSearch"
               @on-change="getResults"
               @on-result-click="setSearchText"
+              @on-cancel="cancelSearch"
+              @on-clear="cancelSearch"
               class="search_container"
               :results="searchResults"
               auto-scroll-to-top>
@@ -23,17 +25,18 @@
       >
         <div class="gap_12" style="background-color: #f8f8f8;"></div>
         <div class="article_body">
-          <div class="article_item" v-for="(article, index) in articles" :key="article.uuid"
-               v-if="((searchText.substring(0, 1) === '@') && article.zpm_user.nickname && (article.zpm_user.nickname.indexOf(searchText.replace(/^@/, '')) > -1)) || (searchText.substring(0, 1) !== '@')">
+          <div class="article_item" v-for="(article, index) in articles" :key="article.uuid">
             <div class="article_item_left" :style="{width: calcToRealPx(150) + 'px', height: '100%'}">
               <div class="article_item_left_avatar_container" :style="{width: calcToRealPx(150) + 'px', height: calcToRealPx(150) + 'px'}">
                 <img class="avatar_img" :src="article.zpm_user.headIcon || (loginInfo.gender == 1 ? assets.maleAvatar : assets.femaleAvatar)">
               </div>
             </div>
             <div class="article_item_right" :style="{width: calcToRealPx(580) + 'px'}">
-              <div class="article_item_right_top_container" :style="{height: calcToRealPx(100) + 'px'}">
-                <div class="username_container" v-text="article.zpm_user.nickname"></div>
-                <div class="member_level_container">{{filterTags(article.tag)}}</div>
+              <div class="article_item_right_top_container">
+                <div class="username_container" v-text="article.zpm_user.nickname" :style="{height: calcToRealPx(50) + 'px'}"></div>
+                <div class="member_level_container" :style="{height: calcToRealPx(40) + 'px'}" v-if="filterTags(article.tag).trim() !== ''">
+                  <div class="member_level_tag" v-for="(t, i) in filterTags(article.tag).split(';')" :key="i" v-text="t"></div>
+                </div>
               </div>
               <div class="article_item_right_bottom_container">
                 <div class="article_item_main_container" :data-article-id="article.uuid.replace(/^([a-zA-Z0-9]*).*/, '$1')" @click="gotoArticleDetail">
@@ -127,15 +130,31 @@
   }
   .member_level_container {
     width: 100%;
-    height: 40%;
+    height: 22px;
     font-size: 12px;
     color: #999999;
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
   }
+  .member_level_tag {
+    display: inline-block;
+    height: 22px;
+    line-height: 22px;
+    margin: 0 4px 0 0;
+    padding: 0 8px;
+    border: none;
+    border-radius: 3px;
+    font-size: 12px;
+    vertical-align: middle;
+    opacity: 1;
+    background-color: #19be6b;
+    color: #ffffff;
+    overflow: hidden;
+  }
   .article_item_right_bottom_container {
     width: 100%;
+    margin-top: 6px;
   }
   .article_item_main_container {
     width: calc(100% - 20px);
@@ -184,7 +203,9 @@
           }
         },
         allTags: {},
+        allTagsArr: [],
         searchText: '',
+        searchValue: '',
         searchResults: [],
         allUsers: []
       }
@@ -209,7 +230,6 @@
     methods: {
       filterTags (tags) {
         const that = this
-        console.log(tags, that.allTags)
         return tags.replace(/(([a-zA-Z0-9]+)(;?))/g, function (item, item2, item3, item4) {
           return (that.allTags[item3] ? that.allTags[item3].text : item3) + item4
         })
@@ -222,6 +242,7 @@
           url: this.requestInfo.getAllTags
         })
         if (allTags.status === 200) {
+          this.allTagsArr = Object.assign([], allTags.data.list)
           this.allTags = this.formatTags(allTags.data.list)
           this.$store.commit(types.CACHE_ALL_ARTICLE_TAGS, {
             tags: this.allTags
@@ -241,37 +262,24 @@
         if (args && args.isInit) {
           this.pageIndex = 1
         }
-//        let _searchCondition = {
-//          pageIndex: this.pageIndex,
-//          pageSize: this.pageSize
-//        }
-//        if (args && args.hasOwnProperty('author') && args.author.trim() !== '') {
-//          _searchCondition.author = args.author
-//        }
         let listData = {}
         if (this.searchText && this.searchText.trim() !== '') {
           switch (this.searchText.trim().substring(0, 1)) {
             case '@':
+              listData = await this.searchArticle({
+                searchType: 'author',
+                searchValue: this.searchValue.trim()
+              })
+              break
             case '#':
               // 按 文章标签 搜索
-//              listData = await this.$store.dispatch(types.AJAX2, {
-//                url: this.requestInfo.searchArticle,
-//                data: _searchCondition
-//              })
               listData = await this.searchArticle({
-                url: this.requestInfo.searchArticle,
-                data: {}
+                searchType: 'tag',
+                searchValue: this.searchValue.trim()
               })
               break
             case ':':
               // 按 文章内容 关键词搜索
-//              listData = await this.$store.dispatch(types.AJAX2, {
-//                url: this.requestInfo.searchArticle,
-//                data: {
-//                  searchType: 'content',
-//                  searchValue: this.searchText.trim().substring(1)
-//                }
-//              })
               listData = await this.searchArticle({
                 searchType: 'content',
                 searchValue: this.searchText.trim().substring(1)
@@ -279,13 +287,6 @@
               break
             default:
               // 按 标题 关键词搜索
-//              listData = await this.$store.dispatch(types.AJAX2, {
-//                url: this.requestInfo.searchArticle,
-//                data: {
-//                  searchType: 'title',
-//                  searchValue: this.searchText.trim()
-//                }
-//              })
               listData = await this.searchArticle({
                 searchType: 'title',
                 searchValue: this.searchText.trim()
@@ -293,13 +294,6 @@
               break
           }
         } else {
-//          listData = await this.$store.dispatch(types.AJAX2, {
-//            url: this.requestInfo.searchArticle,
-//            data: {
-//              searchType: 'title',
-//              searchValue: ''
-//            }
-//          })
           listData = await this.searchArticle({
             searchType: 'title',
             searchValue: ''
@@ -347,12 +341,25 @@
         })
       },
       async doSearch () {
-//        this.$refs.search.setBlur()
         let articlesData = {}
         switch (this.searchText.trim().substring(0, 1)) {
           case '@':
+            articlesData = await this.searchArticle({
+              searchType: 'author',
+              searchValue: this.searchValue
+            })
+            if (articlesData.status === 200) {
+              this.articles = articlesData.data.list
+            }
             break
           case '#':
+            articlesData = await this.searchArticle({
+              searchType: 'tag',
+              searchValue: this.searchValue
+            })
+            if (articlesData.status === 200) {
+              this.articles = articlesData.data.list
+            }
             break
           case ':':
             // 按 文章内容 关键词搜索
@@ -388,14 +395,6 @@
           }
         })
         return searchData
-//        if (searchData.status === 200) {
-//          // 查询成功
-// //          this.articles = searchData.data.list
-//          return searchData.data
-//        } else {
-//          // 查询失败
-//          return []
-//        }
       },
       async getAllUsers (username) {
         let _queryData = await this.$store.dispatch(types.AJAX, {
@@ -429,6 +428,19 @@
         }
         return outUsers
       },
+      formatTagsForSearch () {
+        let _allTags = Object.assign([], this.allTagsArr)
+        let outTags = []
+        for (let i = 0; i < _allTags.length; i++) {
+          if (_allTags[i].text.indexOf(this.searchText.replace(/^#/, '')) > -1 && (_allTags[i].parent !== '0')) {
+            outTags.push({
+              title: '#' + _allTags[i].text,
+              value: _allTags[i].value
+            })
+          }
+        }
+        return outTags
+      },
       getResults () {
         let _searchText = this.searchText
         if (_searchText.trim() === '') {
@@ -440,13 +452,24 @@
             // 按用户昵称搜索
             this.searchResults = this.formatUsersForSearch()
             break
+          case '#':
+            // 按文章标签搜索
+            this.searchResults = this.formatTagsForSearch()
+            break
           default:
             this.searchResults = []
             break
         }
       },
+      cancelSearch () {
+        this.searchText = ''
+        this.searchValue = ''
+        this.doSearch()
+      },
       setSearchText (item) {
         this.searchText = item.title
+        this.searchValue = item.value
+        this.doSearch()
       }
     },
     components: {
