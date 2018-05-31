@@ -52,7 +52,7 @@
     </div>
   </div>
 </template>
-<style scoped>
+<style scoped lang="less">
   .article_list_container {
     width: 100%;
     height: 100%;
@@ -68,14 +68,14 @@
   }
   .article_content_container {
     width: 100%;
-    height: calc(100% - 53px);
+    height: calc(~"100% - 53px");
     background-color: #ffffff;
   }
   .article_item_body_wrapper {
     position: fixed;
     width: 100%;
     background-color: #F8F8F8;
-    height: calc(100% - 53px - 53px);
+    height: calc(~"100% - 53px - 53px");
     /*overflow: hidden;*/
   }
   .article_item {
@@ -148,7 +148,7 @@
     font-size: 12px;
     vertical-align: middle;
     opacity: 1;
-    background-color: #19be6b;
+    background-color: @tab-bar-active-color;
     color: #ffffff;
     overflow: hidden;
   }
@@ -157,7 +157,7 @@
     margin-top: 6px;
   }
   .article_item_main_container {
-    width: calc(100% - 20px);
+    width: calc(~"100% - 20px");
     padding: 10px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -245,7 +245,7 @@
           this.allTagsArr = Object.assign([], allTags.data.list)
           this.allTags = this.formatTags(allTags.data.list)
           this.$store.commit(types.CACHE_ALL_ARTICLE_TAGS, {
-            tags: this.allTags
+            tags: this.allTagsArr
           })
         }
       },

@@ -1,7 +1,14 @@
 <template>
   <div class="publish_container">
     <div class="publish_inner" :class="{unlogin: !loginInfo.token}">
-      发布文章
+      <div class="new_article_card">
+        <group gutter="0px" label-width="50px">
+          <x-input title="标题" placeholder="请输入文章标题" v-model="newArticleData.title"></x-input>
+          <popup-picker title="标签" placeholder="请选择标签" v-model="newArticleData.tag" :options="allTags"></popup-picker>
+          <!--<selector title="标签" placeholder="请选择标签" v-model="newArticleData.tag" :options="allTags"></selector>-->
+          <x-button type="primary" class="create_btn" text="新增"></x-button>
+        </group>
+      </div>
     </div>
 
     <transition name="fade">
@@ -24,11 +31,20 @@
   .publish_inner {
     width: 100%;
     height: 100%;
-    background-color: darkcyan;
+    background-color: rgba(4, 190, 2, .1);
     display: flex;
     align-items: center;
     justify-content: center;
   }
+  .new_article_card {
+    width: 90%;
+    /*min-height: 200px;*/
+    background-color: #ffffff;
+    border-radius: 5px;
+    padding: 15px 10px;
+    box-sizing: border-box;
+  }
+
   .publish_inner.unlogin {
     filter: blur(2px);
   }
@@ -54,14 +70,26 @@
     color: @tabbar-text-active-color;
     margin: 0 10px;
   }
+
+  .create_btn {
+    margin-top: 20px;
+  }
 </style>
 <script>
-  import { XButton } from 'vux'
+  import { Group, XInput, XButton, Selector, PopupPicker } from 'vux'
+  import * as types from '../../store/mutation-types'
   export default {
     name: 'PublishIndex',
     data () {
       return {
-        pageLoaded: false
+        pageLoaded: false,
+        requestInfo: this.$store.state.requestInfo,
+        allTagsArr: [],
+        allTags: [],
+        newArticleData: {
+          title: '',
+          tag: ''
+        }
       }
     },
     computed: {
@@ -69,12 +97,40 @@
         return this.$store.state.loginInfo
       }
     },
-    created () {
+    async created () {
+      await this.getAllTags()
       this.$nextTick(() => {
         this.pageLoaded = true
       })
     },
     methods: {
+      async getAllTags () {
+        /**
+         * 获取所有标签
+         */
+        let allTags = await this.$store.dispatch(types.AJAX2, {
+          url: this.requestInfo.getAllTags
+        })
+        if (allTags.status === 200) {
+          this.allTagsArr = Object.assign([], allTags.data.list)
+          this.allTags = this.formatAllTags(allTags.data.list)
+          this.$store.commit(types.CACHE_ALL_ARTICLE_TAGS, {
+            tags: this.allTagsArr
+          })
+        }
+      },
+      formatAllTags (tags) {
+        let outTags = []
+        for (let i = 0; i < tags.length; i++) {
+          if (tags[i].parent !== '0') {
+            outTags.push({
+              key: tags[i].value,
+              value: tags[i].text
+            })
+          }
+        }
+        return outTags
+      },
       gotoLogin () {
         this.pageLoaded = false
         this.$router.push({
@@ -99,7 +155,11 @@
       }
     },
     components: {
-      XButton
+      Group,
+      XInput,
+      XButton,
+      Selector,
+      PopupPicker
     }
   }
 </script>
