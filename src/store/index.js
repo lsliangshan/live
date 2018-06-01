@@ -97,7 +97,9 @@ const store = new Vuex.Store({
       getAllComments: '/Zpm/comment/list', // 分页获取评论
       sendComment: '/Zpm/comment/comment', // 发表评论
       searchArticle: '/Zpm/article/search', // 按title或content搜索文章
-      getAllTags: '/Zpm/tag/getAll' // 获取 所有 tag
+      getAllTags: '/Zpm/tag/getAll', // 获取 所有 tag
+      createArticle: '/Zpm/article/create', // 新建文章
+      saveArticle: '/Zpm/article/save' // 保存文章内容
     },
     localStorageKeys: {
       userInfo: 'user-info'

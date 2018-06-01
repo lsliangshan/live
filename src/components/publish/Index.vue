@@ -3,10 +3,10 @@
     <div class="publish_inner" :class="{unlogin: !loginInfo.token}">
       <div class="new_article_card">
         <group gutter="0px" label-width="50px">
-          <x-input title="标题" placeholder="请输入文章标题" v-model="newArticleData.title"></x-input>
-          <popup-picker title="标签" placeholder="请选择标签" v-model="newArticleData.tag" :options="allTags"></popup-picker>
+          <x-input title="标题" :required="true" :is-type="validateTitle" @on-click-error-icon="showError" placeholder="请输入文章标题" placeholder-align="right" text-align="right" v-model="newArticleData.title"></x-input>
+          <popup-picker title="标签" :display-format="displayTag" placeholder="请选择标签" v-model="newArticleData.tag" :data="allTags" :columns="2" :fixed-columns="2"></popup-picker>
           <!--<selector title="标签" placeholder="请选择标签" v-model="newArticleData.tag" :options="allTags"></selector>-->
-          <x-button type="primary" class="create_btn" text="新增"></x-button>
+          <x-button type="primary" class="create_btn" text="新增" @click.native="createArticle"></x-button>
         </group>
       </div>
     </div>
@@ -86,9 +86,23 @@
         requestInfo: this.$store.state.requestInfo,
         allTagsArr: [],
         allTags: [],
+        allTagsObj: {},
         newArticleData: {
           title: '',
-          tag: ''
+          tag: []
+        },
+        validateTitle (val) {
+          let _val = val || ''
+          if (!_val || (_val.trim() === '')) {
+            return {
+              valid: false,
+              msg: '标题不能为空'
+            }
+          } else {
+            return {
+              valid: true
+            }
+          }
         }
       }
     },
@@ -104,6 +118,37 @@
       })
     },
     methods: {
+      displayTag (e) {
+        return this.allTagsObj[e[1]].text
+      },
+      async createArticle () {
+        let titleValidation = this.validateTitle(this.newArticleData.title)
+        if (!titleValidation.valid) {
+          this.$vux.toast.show({
+            type: 'text',
+            text: titleValidation.msg
+          })
+        } else {
+          let createData = await this.$store.dispatch(types.AJAX, {
+            url: this.requestInfo.createArticle,
+            data: {
+              title: this.newArticleData.title,
+              tag: this.newArticleData.tag[1]
+            }
+          })
+          if (createData.status === 200) {
+            this.$vux.toast.show({
+              type: 'text',
+              text: '保存成功'
+            })
+          } else {
+            this.$vux.toast.show({
+              type: 'text',
+              text: createData.message || '文章保存失败，请稍后重试'
+            })
+          }
+        }
+      },
       async getAllTags () {
         /**
          * 获取所有标签
@@ -114,6 +159,7 @@
         if (allTags.status === 200) {
           this.allTagsArr = Object.assign([], allTags.data.list)
           this.allTags = this.formatAllTags(allTags.data.list)
+          this.allTagsObj = this.formatTagsObj(allTags.data.list)
           this.$store.commit(types.CACHE_ALL_ARTICLE_TAGS, {
             tags: this.allTagsArr
           })
@@ -122,11 +168,19 @@
       formatAllTags (tags) {
         let outTags = []
         for (let i = 0; i < tags.length; i++) {
+          outTags.push({
+            name: tags[i].text,
+            value: tags[i].value,
+            parent: tags[i].parent
+          })
+        }
+        return outTags
+      },
+      formatTagsObj (tags) {
+        let outTags = {}
+        for (let i = 0; i < tags.length; i++) {
           if (tags[i].parent !== '0') {
-            outTags.push({
-              key: tags[i].value,
-              value: tags[i].text
-            })
+            outTags[tags[i].value] = tags[i]
           }
         }
         return outTags
@@ -144,6 +198,12 @@
           query: {
             t: 'r'
           }
+        })
+      },
+      showError (msg) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: msg
         })
       }
     },
