@@ -216,20 +216,20 @@
         }
 
         if (this.listenBeforeScroll) {
-          this.scroll.on('beforeScrollStart', () => {
-            this.$emit('beforeScrollStart')
+          this.scroll.on('beforeScrollStart', (e) => {
+            this.$emit('beforeScrollStart', e)
           })
         }
 
         if (this.listenScrollEnd) {
-          this.scroll.on('scrollEnd', () => {
-            this.$emit('scrollEnd')
+          this.scroll.on('scrollEnd', (e) => {
+            this.$emit('scrollEnd', e)
           })
         }
 
         if (this.listenTouchEnd) {
-          this.scroll.on('touchEnd', () => {
-            this.$emit('touchEnd')
+          this.scroll.on('touchEnd', (e) => {
+            this.$emit('touchEnd', e)
           })
         }
 

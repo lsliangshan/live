@@ -4,8 +4,10 @@
                @initialed="scrollInitialed"
                :style="{height: (isPc ? '100%' : 'calc(100% - 48px)')}"
                :scroll-to-ele="scrollToElement"
+               :listenScrollEnd="true"
+               @scrollEnd="scrollEnd"
     >
-      <h3 class="article_item_title">
+      <h3 class="article_item_title" :ref="titleRef">
         <span>{{article.title}}</span>
       </h3>
       <small class="article_item_sub_title">
@@ -28,6 +30,19 @@
 
       <div class="gap_30"></div>
     </ls-scroll>
+
+    <div class="side_menu_container">
+      <div class="side_menu_item" @click="goHome">
+        <svg slot="icon">
+          <use :xlink:href="'#home'"></use>
+        </svg>
+      </div>
+      <div class="side_menu_item" :style="{opacity: showGoToTop ? 1 : 0}" @click="goToTop">
+        <svg slot="icon">
+          <use :xlink:href="'#top'"></use>
+        </svg>
+      </div>
+    </div>
 
     <div class="bottom_feedback" :style="{height: '48px'}" v-if="!showCommentList">
       <feedback :aid="article.uuid" :pid="''" :rid="''" :focus="false" @feedback="addComment"></feedback>
@@ -110,6 +125,42 @@
     -o-transform: translate(0, 0%);
     transform: translate(0, 0%);
   }
+
+  .side_menu_container {
+    position: absolute;
+    width: 48px;
+    right: 5px;
+    bottom: 200px;
+    z-index: 9999;
+  }
+  .side_menu_item {
+    width: 48px;
+    height: 48px;
+    margin-top: 1px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, .6);
+    -webkit-transition: opacity .15s ease-in-out;
+    -moz-transition: opacity .15s ease-in-out;
+    -ms-transition: opacity .15s ease-in-out;
+    -o-transition: opacity .15s ease-in-out;
+    transition: opacity .15s ease-in-out;
+  }
+  .side_menu_item:active {
+    background-color: rgba(0, 0, 0, .8);
+  }
+  .side_menu_item svg {
+    width: 27px;
+    height: 27px;
+    pointer-events: none;
+    fill: rgba(204,204,204,.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 </style>
 <script>
   import * as types from '../../store/mutation-types'
@@ -133,12 +184,14 @@
         location: location.href,
         commentRef: 'comment-ref',
         commentListRef: 'comment-list-ref',
+        titleRef: 'title-ref',
         currentComment: {},
         showCommentList: false,
         article: {
           'zpm_user': {}
         },
-        detailScroll: null
+        detailScroll: null,
+        showGoToTop: false
       }
     },
     computed: {
@@ -164,6 +217,20 @@
       // this.eventHub.$on(this.events.frontArticleCloseCommentList, this.closeCommentList)
     },
     methods: {
+      scrollEnd (e) {
+        this.showGoToTop = (e.y < -100)
+      },
+      goHome () {
+        this.$router.replace({
+          name: 'ArticleIndex'
+        })
+      },
+      goToTop () {
+        this.scrollToElement = this.$refs[this.titleRef]
+        setTimeout(() => {
+          this.scrollToElement = null
+        }, 10)
+      },
       async getContent () {
         let _articleId = this.$route.params.aid
         let _localStorage = await StorageUtil.getItem(this.localStorageKeys.currentArticleContent)

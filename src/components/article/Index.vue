@@ -219,16 +219,7 @@
         return this.$store.state.loginInfo
       }
     },
-    // beforeRouteEnter (to, from, next) {
-    //   next(vm => {
-    //     console.log('=====', !vm.$store.state.articlePageInitialed, vm)
-    //     if (!vm.$store.state.articlePageInitialed) {
-    //       vm.init()
-    //     }
-    //   })
-    // },
     created () {
-      console.log('......... created')
       this.init()
     },
     methods: {
