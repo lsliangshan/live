@@ -50,7 +50,7 @@
     </div>
 
     <div class="btns_container" :class="{shown: hasChanged}">
-      <x-button type="primary" text="修改" @click.native="updateUserInfo"></x-button>
+      <x-button type="primary" text="修改" :disabled="!hasChanged" @click.native="updateUserInfo"></x-button>
     </div>
   </div>
 </template>
