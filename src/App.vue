@@ -197,6 +197,7 @@
 
   .search_container .weui-search-bar {
     padding: 13px 10px;
+    background-color: #F8F8F8;
   }
   .search_container .weui-search-bar:after {
     border-bottom: none;

@@ -87,7 +87,8 @@ const store = new Vuex.Store({
     },
     allUsers: [],
     requestInfo: {
-      baseUrl: 'http://192.168.189.89:3000',
+      baseUrl: 'https://talkapi.dei2.com',
+      // baseUrl: 'http://10.2.4.229:3000',
       login: '/Zpm/user/login',
       registry: '/Zpm/user/register',
       queryUsers: '/Zpm/user/queryUsers', // 查询用户列表，模糊查询。不需要管理员权限
@@ -102,7 +103,8 @@ const store = new Vuex.Store({
       saveArticle: '/Zpm/article/save' // 保存文章内容
     },
     localStorageKeys: {
-      userInfo: 'user-info'
+      userInfo: 'user-info',
+      currentArticleContent: 'current-article-content'
     },
     isLoading: false, // 页面是否在加载中
     loginInfo: {},

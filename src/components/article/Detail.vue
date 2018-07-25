@@ -113,6 +113,7 @@
 </style>
 <script>
   import * as types from '../../store/mutation-types'
+  import { StorageUtil } from '../../utils/index'
   export default {
     name: 'ArticleDetail',
     data () {
@@ -120,6 +121,7 @@
         requestInfo: this.$store.state.requestInfo,
         eventHub: this.$store.state.eventHub,
         events: this.$store.state.events,
+        localStorageKeys: this.$store.state.localStorageKeys,
         isPc: !navigator.userAgent.match(/(iphone)|(android)/i),
         comment: '',
         scrollToElement: '',
@@ -164,21 +166,33 @@
     methods: {
       async getContent () {
         let _articleId = this.$route.params.aid
-        let articleData = await this.$store.dispatch(types.AJAX2, {
-          url: this.requestInfo.viewArticle,
-          data: {
-            uuid: _articleId
+        let _localStorage = await StorageUtil.getItem(this.localStorageKeys.currentArticleContent)
+        let _getCommentFlag = false
+        if ((typeof _localStorage === 'string' && _localStorage.trim() === '') || (_localStorage.uuid.indexOf(_articleId)) !== 0) {
+          // 不存在，则从接口获取文章内容
+          let articleData = await this.$store.dispatch(types.AJAX2, {
+            url: this.requestInfo.viewArticle,
+            data: {
+              uuid: _articleId
+            }
+          })
+          if (articleData.status === 200) {
+            this.article = articleData.data
+            await StorageUtil.setItem(this.localStorageKeys.currentArticleContent, articleData.data)
+            _getCommentFlag = true
+          } else {
+            this.article = {
+              'zpm_user': {}
+            }
           }
-        })
-        if (articleData.status === 200) {
-          this.article = articleData.data
+        } else {
+          this.article = _localStorage
+          _getCommentFlag = true
+        }
+        if (_getCommentFlag) {
           await this.listComments({
             isInit: true
           })
-        } else {
-          this.article = {
-            'zpm_user': {}
-          }
         }
       },
       async listComments (args) {
@@ -225,7 +239,6 @@
       },
       addComment (data) {
         this.comments.unshift(data)
-        console.log(this.comments[0], data)
         this.cacheArticleComments(this.comments)
         this.scrollToElement = this.$refs[this.commentListRef]
         setTimeout(() => {

@@ -10,7 +10,8 @@
               @on-clear="cancelSearch"
               class="search_container"
               :results="searchResults"
-              auto-scroll-to-top>
+              auto-scroll-to-top
+      >
       </search>
     </div>
     <div class="article_content_container">
@@ -27,7 +28,7 @@
         <div class="article_body">
           <div class="article_item" v-for="(article, index) in articles" :key="article.uuid">
             <div class="article_item_left" :style="{width: calcToRealPx(150) + 'px', height: '100%'}">
-              <div class="article_item_left_avatar_container" :style="{width: calcToRealPx(150) + 'px', height: calcToRealPx(150) + 'px'}">
+              <div class="article_item_left_avatar_container" :style="{width: calcToRealPx(120) + 'px', height: calcToRealPx(120) + 'px'}">
                 <img class="avatar_img" :src="article.zpm_user.headIcon || (loginInfo.gender == 1 ? assets.maleAvatar : assets.femaleAvatar)">
               </div>
             </div>
@@ -39,7 +40,7 @@
                 </div>
               </div>
               <div class="article_item_right_bottom_container">
-                <div class="article_item_main_container" :data-article-id="article.uuid.replace(/^([a-zA-Z0-9]*).*/, '$1')" @click="gotoArticleDetail">
+                <div class="article_item_main_container" :data-article-id="article.uuid.replace(/^([a-zA-Z0-9]*).*/, '$1')" :data-index="index" @click="gotoArticleDetail">
                   <div class="article_item_title pen" v-text="article.title"></div>
                   <div class="article_item_content pen" v-ellipsis:50="article.content">
                   </div>
@@ -81,12 +82,12 @@
   .article_item {
     width: 100%;
     /*min-height: 200px;*/
-    padding: 8px 0;
+    padding: 15px 0;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     background-color: #ffffff;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -105,6 +106,7 @@
     width: 90%;
     height: 90%;
     border-radius: 50%;
+    border: 2px solid #f5f5f5;
     overflow: hidden;
   }
   .article_item_right {
@@ -180,15 +182,17 @@
 <script>
   import * as types from '../../store/mutation-types'
   import { Search } from 'vux'
+  import { StorageUtil } from '../../utils/index'
   export default {
     name: 'ArticleIndex',
     data () {
       return {
         requestInfo: this.$store.state.requestInfo,
         assets: this.$store.state.assets,
+        localStorageKeys: this.$store.state.localStorageKeys,
         articles: [],
         pageIndex: 1,
-        pageSize: 2,
+        pageSize: 20,
         offsetCount: 0,
         totalCounts: 0,
         totalPages: 1,
@@ -215,19 +219,31 @@
         return this.$store.state.loginInfo
       }
     },
-    async created () {
-      await this.getAllTags()
-      await this.getAllArticle({
-        isInit: true
-      })
-
-      if (this.$store.state.allUsers.length > 0) {
-        this.allUsers = this.$store.state.allUsers
-      } else {
-        this.allUsers = await this.getAllUsers()
-      }
+    // beforeRouteEnter (to, from, next) {
+    //   next(vm => {
+    //     console.log('=====', !vm.$store.state.articlePageInitialed, vm)
+    //     if (!vm.$store.state.articlePageInitialed) {
+    //       vm.init()
+    //     }
+    //   })
+    // },
+    created () {
+      console.log('......... created')
+      this.init()
     },
     methods: {
+      async init () {
+        await this.getAllTags()
+        await this.getAllArticle({
+          isInit: true
+        })
+
+        if (this.$store.state.allUsers.length > 0) {
+          this.allUsers = this.$store.state.allUsers
+        } else {
+          this.allUsers = await this.getAllUsers()
+        }
+      },
       filterTags (tags) {
         const that = this
         return tags.replace(/(([a-zA-Z0-9]+)(;?))/g, function (item, item2, item3, item4) {
@@ -332,7 +348,9 @@
           this.$refs[this.scrollRef].forceUpdate()
         }
       },
-      gotoArticleDetail (e) {
+      async gotoArticleDetail (e) {
+        let _index = Number(e.target.dataset.index)
+        await StorageUtil.setItem(this.localStorageKeys.currentArticleContent, this.articles[_index])
         this.$router.push({
           name: 'ArticleDetail',
           params: {

@@ -151,7 +151,7 @@
   }
   .main_operation_item_right_value {
     color: #999999;
-    font-size: 13px;
+    font-size: 15px;
     text-align: right;
   }
 

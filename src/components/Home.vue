@@ -2,7 +2,10 @@
   <div class="home_container">
     <div style="height: 100%;" body-padding-bottom="53px">
       <!--<ls-scroll class="main_scroll_container" :options="scrollOptions">-->
+      <keep-alive>
         <router-view name="ContentRouter"></router-view>
+      </keep-alive>
+      <!--<router-view name="ContentRouter" v-if="!$route.meta.keepAlive"></router-view>-->
       <!--</ls-scroll>-->
       <div class="bottom_tabbars_container" slot="bottom">
         <main-tabbars></main-tabbars>

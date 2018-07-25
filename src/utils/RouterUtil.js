@@ -31,31 +31,15 @@
  **                                              不见满街漂亮妹，哪个归得程序员？
  */
 /**
- * Created by liangshan on 2017/7/13.
+ * Created by liangshan on 2018/7/24.
  */
-
-import * as types from './mutation-types'
-import { StorageUtil, KitUtil } from '../utils/index'
-
-export const mutations = {
-  [types.UPDATE_LOADING_STATUS] (state, data) {
-    state.isLoading = data.isLoading
-  },
-  [types.CACHE_LOGIN_DATA] (state, data) {
-    state.loginInfo = data
-    if (!KitUtil.isEmptyObject(data)) {
-      StorageUtil.setItem(state.localStorageKeys.userInfo, data)
-    } else {
-      StorageUtil.removeItem(state.localStorageKeys.userInfo)
-    }
-  },
-  [types.SET_COMMENTS] (state, data) {
-    state.article.comments = Object.assign({}, state.article.comments, data)
-  },
-  [types.CACHE_ALL_USERS] (state, data) {
-    state.allUsers = data.users
-  },
-  [types.CACHE_ALL_ARTICLE_TAGS] (state, data) {
-    state.allArticleTags = data.tags
+const RouterUtil = (function () {
+  const _title = function (title) {
+    window.document.title = (title || '智愚')
   }
-}
+  return {
+    title: _title
+  }
+})()
+
+export default RouterUtil

@@ -10,7 +10,7 @@ import App from './App'
 import * as filters from './filters'
 import mixins from './mixins'
 import VueNavigation from 'vue-navigation'
-import utils from './utils/index'
+import { StorageUtil, RouterUtil, KitUtil } from './utils/index'
 import { WechatPlugin, AjaxPlugin, ToastPlugin } from 'vux'
 require('./directives/index')
 
@@ -24,12 +24,17 @@ sync(store, router)
 
 Vue.use(VueNavigation, {router, store, moduleName: 'navigation', keyName: 'p'})
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   // store.commit('UPDATE_LOADING_STATUS', {isLoading: true})
-  const _state = router.app.$options.store.state
-  let _localUserInfo = utils.storage.getItem(_state.localStorageKeys.userInfo)
+  const _state = store.state
+  // const _state = router.app.$options.store.state
+  if (_state.needlessLogin.indexOf(to.name) > -1) {
+    next()
+    return
+  }
+  let _localUserInfo = await StorageUtil.getItem(_state.localStorageKeys.userInfo)
   if (to.meta && to.meta.title) {
-    utils.kit.title(to.meta.title)
+    RouterUtil.title(to.meta.title)
   }
   if (to.meta && to.meta.role && to.meta.role.indexOf(_localUserInfo.role) < 0) {
     next({
@@ -43,13 +48,15 @@ router.beforeEach((to, from, next) => {
     })
     if (_status.name === 'TokenExpiredError') {
       _localUserInfo.token = ''
-      utils.storage.removeItem(_state.localStorageKeys.userInfo)
+      StorageUtil.removeItem(_state.localStorageKeys.userInfo)
+      // 清空登录信息
+      store.commit('CACHE_LOGIN_DATA', {})
       // next({
       //   replace: true,
       //   name: 'Login'
       // })
     }
-    if (utils.isEmptyObj(_localUserInfo)) {
+    if ((typeof _localUserInfo === 'string' && _localUserInfo.trim() === '') || KitUtil.isEmptyObject(_localUserInfo)) {
       if (_state.needlessLogin.indexOf(to.name) === -1) {
         // next({
         //   replace: true,
@@ -57,7 +64,8 @@ router.beforeEach((to, from, next) => {
         // })
       }
     } else {
-      _state.loginInfo = _localUserInfo
+      // _state.loginInfo = _localUserInfo
+      store.commit('CACHE_LOGIN_DATA', _localUserInfo)
       if (to.name === 'Login') {
         next({
           replace: true,

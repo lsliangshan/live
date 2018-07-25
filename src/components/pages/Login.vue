@@ -166,14 +166,14 @@
 <script>
   import { Group, XInput, XButton, InlineLoading } from 'vux'
   import * as types from '../../store/mutation-types'
-  import utils from '../../utils'
+  import { ValidateUtil, StorageUtil } from '../../utils/index'
   export default {
     name: 'LoginOrRegistry',
     data () {
       return {
         action: 'login',
-        validatePhonenum: utils.func.validatePhonenum,
-        validatePassword: utils.func.validatePassword,
+        validatePhonenum: ValidateUtil.validatePhonenum,
+        validatePassword: ValidateUtil.validatePassword,
         noEmpty (val) {
           let _val = val || ''
           if (!_val || (_val.trim() === '')) {
@@ -253,7 +253,7 @@
             this.$router.back()
           } else {
             // 登录失败
-            utils.storage.removeItem(this.$store.state.localStorageKeys.userInfo)
+            StorageUtil.removeItem(this.$store.state.localStorageKeys.userInfo)
             this.$store.commit(types.CACHE_LOGIN_DATA, {})
             this.$vux.toast.show({
               type: 'text',

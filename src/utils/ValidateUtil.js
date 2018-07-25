@@ -31,31 +31,49 @@
  **                                              不见满街漂亮妹，哪个归得程序员？
  */
 /**
- * Created by liangshan on 2017/7/13.
+ * Created by liangshan on 2018/7/24.
  */
-
-import * as types from './mutation-types'
-import { StorageUtil, KitUtil } from '../utils/index'
-
-export const mutations = {
-  [types.UPDATE_LOADING_STATUS] (state, data) {
-    state.isLoading = data.isLoading
-  },
-  [types.CACHE_LOGIN_DATA] (state, data) {
-    state.loginInfo = data
-    if (!KitUtil.isEmptyObject(data)) {
-      StorageUtil.setItem(state.localStorageKeys.userInfo, data)
+const ValidateUtil = (function () {
+  const _validatePhonenum = function (val) {
+    let _val = val || ''
+    if (!_val || (_val.trim() === '')) {
+      return {
+        valid: false,
+        msg: '手机号不能为空'
+      }
+    } else if (!/^1[345678]\d{9}$/.test(_val)) {
+      return {
+        valid: false,
+        msg: '手机号格式不正确'
+      }
     } else {
-      StorageUtil.removeItem(state.localStorageKeys.userInfo)
+      return {
+        valid: true
+      }
     }
-  },
-  [types.SET_COMMENTS] (state, data) {
-    state.article.comments = Object.assign({}, state.article.comments, data)
-  },
-  [types.CACHE_ALL_USERS] (state, data) {
-    state.allUsers = data.users
-  },
-  [types.CACHE_ALL_ARTICLE_TAGS] (state, data) {
-    state.allArticleTags = data.tags
   }
-}
+  const _validatePassword = function (val) {
+    let _val = val || ''
+    if (!_val || (_val.trim() === '')) {
+      return {
+        valid: false,
+        msg: '密码不能为空'
+      }
+    } else if (_val.trim().length < 6) {
+      return {
+        valid: false,
+        msg: '密码最少为6位'
+      }
+    } else {
+      return {
+        valid: true
+      }
+    }
+  }
+  return {
+    validatePhonenum: _validatePhonenum,
+    validatePassword: _validatePassword
+  }
+})()
+
+export default ValidateUtil

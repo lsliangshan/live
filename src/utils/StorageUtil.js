@@ -31,31 +31,52 @@
  **                                              不见满街漂亮妹，哪个归得程序员？
  */
 /**
- * Created by liangshan on 2017/7/13.
+ * Created by liangshan on 2018/7/24.
  */
-
-import * as types from './mutation-types'
-import { StorageUtil, KitUtil } from '../utils/index'
-
-export const mutations = {
-  [types.UPDATE_LOADING_STATUS] (state, data) {
-    state.isLoading = data.isLoading
-  },
-  [types.CACHE_LOGIN_DATA] (state, data) {
-    state.loginInfo = data
-    if (!KitUtil.isEmptyObject(data)) {
-      StorageUtil.setItem(state.localStorageKeys.userInfo, data)
-    } else {
-      StorageUtil.removeItem(state.localStorageKeys.userInfo)
-    }
-  },
-  [types.SET_COMMENTS] (state, data) {
-    state.article.comments = Object.assign({}, state.article.comments, data)
-  },
-  [types.CACHE_ALL_USERS] (state, data) {
-    state.allUsers = data.users
-  },
-  [types.CACHE_ALL_ARTICLE_TAGS] (state, data) {
-    state.allArticleTags = data.tags
+const StorageUtil = (function () {
+  const _getItem = function (name) {
+    return new Promise(resolve => {
+      let _value = localStorage.getItem(name) || ''
+      try {
+        _value = JSON.parse(_value)
+      } catch (err) {
+      }
+      resolve(_value)
+    })
   }
-}
+
+  const _setItem = function (name, value) {
+    return new Promise(resolve => {
+      let _value = value
+      if (typeof value !== 'string') {
+        _value = JSON.stringify(value)
+      }
+      localStorage.setItem(name, _value)
+      resolve(true)
+    })
+  }
+
+  const _removeItem = function (name) {
+    return new Promise(resolve => {
+      if (localStorage.hasOwnProperty(name)) {
+        localStorage.removeItem(name)
+      }
+      resolve(true)
+    })
+  }
+
+  const _clear = function () {
+    return new Promise(resolve => {
+      localStorage.clear()
+      resolve(true)
+    })
+  }
+  return {
+    getItem: _getItem,
+    setItem: _setItem,
+    removeItem: _removeItem,
+    clear: _clear
+  }
+})()
+
+export default StorageUtil

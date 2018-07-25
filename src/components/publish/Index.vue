@@ -219,7 +219,8 @@
       XInput,
       XButton,
       Selector,
-      PopupPicker
+      PopupPicker,
+      LsEditor: () => import('../plugins/LsEditor/index.vue')
     }
   }
 </script>
