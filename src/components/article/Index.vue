@@ -26,28 +26,29 @@
       >
         <div class="gap_12" style="background-color: #f8f8f8;"></div>
         <div class="article_body">
-          <div class="article_item" v-for="(article, index) in articles" :key="article.uuid">
-            <div class="article_item_left" :style="{width: calcToRealPx(150) + 'px', height: '100%'}">
-              <div class="article_item_left_avatar_container" :style="{width: calcToRealPx(120) + 'px', height: calcToRealPx(120) + 'px'}">
-                <img class="avatar_img" :src="article.zpm_user.headIcon || (loginInfo.gender == 1 ? assets.maleAvatar : assets.femaleAvatar)">
-              </div>
-            </div>
-            <div class="article_item_right" :style="{width: calcToRealPx(580) + 'px'}">
-              <div class="article_item_right_top_container">
-                <div class="username_container" v-text="article.zpm_user.nickname" :style="{height: calcToRealPx(50) + 'px'}"></div>
-                <div class="member_level_container" :style="{height: calcToRealPx(40) + 'px'}" v-if="filterTags(article.tag).trim() !== ''">
-                  <div class="member_level_tag" v-for="(t, i) in filterTags(article.tag).split(';')" :key="i" v-text="t"></div>
-                </div>
-              </div>
-              <div class="article_item_right_bottom_container">
-                <div class="article_item_main_container" :data-article-id="article.uuid.replace(/^([a-zA-Z0-9]*).*/, '$1')" :data-index="index" @click="gotoArticleDetail">
-                  <div class="article_item_title pen" v-text="article.title"></div>
-                  <div class="article_item_content pen" v-ellipsis:50="article.content">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <article-card v-for="(article, index) in articles" :key="article.uuid" :all-tags="allTags" :comments="article.zpm_comments.length" :article="article"></article-card>
+          <!--<div class="article_item" v-for="(article, index) in articles" :key="article.uuid">-->
+            <!--<div class="article_item_left" :style="{width: calcToRealPx(150) + 'px', height: '100%'}">-->
+              <!--<div class="article_item_left_avatar_container" :style="{width: calcToRealPx(120) + 'px', height: calcToRealPx(120) + 'px'}">-->
+                <!--<img class="avatar_img" :src="article.zpm_user.headIcon || (loginInfo.gender == 1 ? assets.maleAvatar : assets.femaleAvatar)">-->
+              <!--</div>-->
+            <!--</div>-->
+            <!--<div class="article_item_right" :style="{width: calcToRealPx(580) + 'px'}">-->
+              <!--<div class="article_item_right_top_container">-->
+                <!--<div class="username_container" v-text="article.zpm_user.nickname" :style="{height: calcToRealPx(50) + 'px'}"></div>-->
+                <!--<div class="member_level_container" :style="{height: calcToRealPx(40) + 'px'}" v-if="filterTags(article.tag).trim() !== ''">-->
+                  <!--<div class="member_level_tag" v-for="(t, i) in filterTags(article.tag).split(';')" :key="i" v-text="t"></div>-->
+                <!--</div>-->
+              <!--</div>-->
+              <!--<div class="article_item_right_bottom_container">-->
+                <!--<div class="article_item_main_container" :data-article-id="article.uuid.replace(/^([a-zA-Z0-9]*).*/, '$1')" :data-index="index" @click="gotoArticleDetail">-->
+                  <!--<div class="article_item_title pen" v-text="article.title"></div>-->
+                  <!--<div class="article_item_content pen" v-ellipsis:50="article.content">-->
+                  <!--</div>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
         </div>
       </ls-scroll>
     </div>
@@ -56,12 +57,39 @@
 <style scoped lang="less">
   .article_list_container {
     width: 100%;
-    height: 100%;
+    height: calc(~"100% - 53px");
   }
   .article_header_container {
     width: 100%;
     height: 53px;
+    border-bottom: 1px solid #F8F8F8;
     background-color: #FFFFFF;
+    padding: 0 15px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .article_header_container input {
+    display: inline-block;
+    width: 100%;
+    height: 32px;
+    line-height: 1.5;
+    padding: 4px 7px;
+    font-size: 12px;
+    border: 1px solid #dcdee2;
+    border-radius: 4px;
+    color: #515a6e;
+    background-color: #fff;
+    background-image: none;
+    position: relative;
+    cursor: text;
+    transition: border .2s ease-in-out,background .2s ease-in-out,box-shadow .2s ease-in-out;
+  }
+  .article_header_container input::placeholder {
+    text-align: center;
   }
   .search_container {
     width: 100%;
@@ -483,7 +511,8 @@
     },
     components: {
       Search,
-      LsScroll: () => import('../plugins/LsScroll/LsScroll.vue')
+      LsScroll: () => import('../plugins/LsScroll/LsScroll.vue'),
+      ArticleCard: () => import('./Card.vue')
     }
   }
 </script>

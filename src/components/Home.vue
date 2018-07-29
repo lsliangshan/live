@@ -25,6 +25,8 @@
   .bottom_tabbars_container {
     width: 100%;
     height: 53px;
+    border-top: 1px solid #e8e8e8;
+    background-color: transparent;
   }
 </style>
 <script>

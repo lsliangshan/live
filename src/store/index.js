@@ -63,7 +63,7 @@ const store = new Vuex.Store({
       },
       {
         name: 'viewList',
-        text: '经验',
+        text: '文章',
         pathName: 'ArticleIndex',
         path: '/article/index'
       },

@@ -61,7 +61,7 @@ export const HomeRouter = {
       path: '/publish/index',
       name: 'PublishIndex',
       meta: {
-        title: '发布经验',
+        title: '发布文章',
         index: 1
       },
       components: {
@@ -76,7 +76,7 @@ export const HomeRouter = {
       path: '/article/index',
       name: 'ArticleIndex',
       meta: {
-        title: '经验列表',
+        title: '文章列表',
         index: 1
       },
       components: {

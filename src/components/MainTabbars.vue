@@ -17,6 +17,7 @@
  .rqq_tabbars_container {
    width: 100%;
    height: 100%;
+   background-color: transparent;
  }
  svg {
    width: 20px;
@@ -34,7 +35,7 @@
     data () {
       return {
         tabbars: this.$store.state.tabbars,
-        defaultSelectedIndex: 2
+        defaultSelectedIndex: 1
       }
     },
     computed: {
