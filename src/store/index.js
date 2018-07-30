@@ -76,7 +76,8 @@ const store = new Vuex.Store({
     ],
     assets: {
       maleAvatar: '/static/images/avatar_male_1.jpg',
-      femaleAvatar: '/static/images/avatar_female_1.jpg'
+      femaleAvatar: '/static/images/avatar_female_1.jpg',
+      articleAlbum: 'https://static.dei2.com/live/images/article.jpeg'
     },
     article: {
       comments: {}

@@ -2,7 +2,7 @@
   <div class="article_card_container" @click="gotoArticleDetail">
     <div class="article_card_wrapper">
       <div class="article_album">
-        <img class="article_album_image" src="https://static.dei2.com/live/images/article.jpeg">
+        <img class="article_album_image" :src="assets.articleAlbum">
       </div>
       <div class="author_info_container">
         <div class="author_container">
