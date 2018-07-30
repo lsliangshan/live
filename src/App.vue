@@ -1,5 +1,5 @@
 <template>
-  <div id="app" @touchmove="touchmove">
+  <div id="app" @touchstart="touchstart" @touchend="touchend">
     <div class="home_router_container">
       <transition :name="transitionName" :css="cssFlag">
         <navigation>
@@ -24,7 +24,12 @@
         isBack: false,
         navigationType: '',
         isTouchMove: false,
-        touchMoveTimeout: null
+        touchMoveTimeout: null,
+        initialized: false,
+        point: {
+          x: 0,
+          y: 0
+        }
       }
     },
     computed: {
@@ -58,8 +63,18 @@
       })
     },
     methods: {
-      touchmove (e) {
-        this.isTouchMove = true
+      touchstart (e) {
+        this.point = {
+          x: e.changedTouches[0].clientX,
+          y: e.changedTouches[0].clientY
+        }
+      },
+      touchend (e) {
+        this.isTouchMove = (Math.abs(e.changedTouches[0].clientX - this.point.x) > Math.abs(e.changedTouches[0].clientY - this.point.y))
+        this.point = {
+          x: 0,
+          y: 0
+        }
       }
     },
     watch: {

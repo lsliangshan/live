@@ -1,5 +1,5 @@
 <template>
-  <div class="article_list_container">
+  <div class="article_list_container" :style="{opacity: initialized ? 1 : 0}">
     <div class="article_header_container">
       <search position="absolute"
               v-model="searchText"
@@ -58,6 +58,11 @@
   .article_list_container {
     width: 100%;
     height: calc(~"100% - 53px");
+    -webkit-transition: opacity .3s ease-in-out;
+    -moz-transition: opacity .3s ease-in-out;
+    -ms-transition: opacity .3s ease-in-out;
+    -o-transition: opacity .3s ease-in-out;
+    transition: opacity .3s ease-in-out;
   }
   .article_header_container {
     width: 100%;
@@ -239,7 +244,8 @@
         searchText: '',
         searchValue: '',
         searchResults: [],
-        allUsers: []
+        allUsers: [],
+        initialized: false
       }
     },
     computed: {
@@ -262,6 +268,7 @@
         } else {
           this.allUsers = await this.getAllUsers()
         }
+        this.initialized = true
       },
       filterTags (tags) {
         const that = this
