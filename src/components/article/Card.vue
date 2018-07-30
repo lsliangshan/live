@@ -2,7 +2,7 @@
   <div class="article_card_container" @click="gotoArticleDetail">
     <div class="article_card_wrapper">
       <div class="article_album">
-        <img class="article_album_image" :src="assets.articleAlbum">
+        <img class="article_album_image" :src="article.album || assets.articleAlbum">
       </div>
       <div class="author_info_container">
         <div class="author_container">
