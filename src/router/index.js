@@ -28,19 +28,19 @@ export const ProfilePages = [
   }
 ]
 
-// export const ArticlePages = [
-//   {
-//     path: '/article/detail/:aid',
-//     name: 'ArticleDetail',
-//     meta: {
-//       title: '文章详情',
-//       index: 2
-//     },
-//     components: {
-//       HomeRouter: () => import('../components/article/Detail.vue')
-//     }
-//   }
-// ]
+export const ArticlePages = [
+  {
+    path: '/article/detail/:aid',
+    name: 'ArticleDetail',
+    meta: {
+      title: '文章详情',
+      index: 2
+    },
+    components: {
+      HomeRouter: () => import('../components/article/Detail.vue')
+    }
+  }
+]
 
 export const HomeRouter = {
   path: '/',
@@ -81,17 +81,6 @@ export const HomeRouter = {
       },
       components: {
         ContentRouter: () => import('../components/article/Index.vue')
-      }
-    },
-    {
-      path: '/article/detail/:aid',
-      name: 'ArticleDetail',
-      meta: {
-        title: '文章详情',
-        index: 2
-      },
-      components: {
-        HomeRouter: () => import('../components/article/Detail.vue')
       }
     },
     {
@@ -142,7 +131,7 @@ export default new Router({
   routes: [
     HomeRouter,
     ...ProfilePages,
-    // ...ArticlePages,
+    ...ArticlePages,
     ...LoginRouter,
     page404
   ]
