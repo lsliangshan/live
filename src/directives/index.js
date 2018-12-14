@@ -33,33 +33,8 @@
 /**
  * Created by liangshan on 2018/4/16.
  */
-import Vue from 'vue'
-import marked from 'marked'
+// import Vue from 'vue'
 
-Vue.directive('md', {
-  componentUpdated (el, binding, vnode) {
-    let _len = (binding.arg ? Number(binding.arg) : 0)
-    let _val = binding.value ? binding.value : ''
-    if (_len > 0) {
-      if (binding.value && binding.value.length > _len) {
-        _val = binding.value.replace(binding.value.substring(_len), '...')
-      }
-    }
-    el.innerHTML = marked(_val, {
-      smartLists: true
-    })
-  }
-})
-
-Vue.directive('ellipsis', {
-  bind (el, binding) {
-    let _len = (binding.arg ? Number(binding.arg) : 0)
-    let _val = binding.value ? binding.value : ''
-    if (_len > 0) {
-      if (binding.value && binding.value.length > _len) {
-        _val = binding.value.replace(binding.value.substring(_len), '...')
-      }
-    }
-    el.innerText = _val.replace(/[\n\r]/g, '')
-  }
-})
+// Vue.directive('md', {
+//   componentUpdated (el, binding, vnode) {}
+// })

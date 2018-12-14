@@ -38,6 +38,7 @@ import Vuex from 'vuex'
 import * as actions from './actions'
 import * as mutations from './mutations'
 import * as getters from './getters'
+// import moduleNem from './modules/moduleNem'
 
 Vue.use(Vuex)
 
@@ -45,69 +46,39 @@ const store = new Vuex.Store({
   actions: actions.actions,
   mutations: mutations.mutations,
   getters: getters.getters,
+  modules: {
+    // moduleNem
+  },
   state: {
-    username: 'ls',
-    author: '智愚',
-    appName: 'RQQ WX',
-    fullAppName: 'RQQ',
-    shortAppName: 'R',
-    appSettings: {
-      bg: '/static/images/bg.jpeg'
-    },
+    theme: 'dark',
+    themeColor: 'rgb(10, 81, 15)',
+    events: {},
+    localStorageKeys: {},
+    assets: {},
     tabbars: [
       {
-        name: 'edit',
-        text: '发布',
-        pathName: 'PublishIndex',
-        path: '/publish/index'
+        name: 'news',
+        text: '新闻',
+        pathName: 'NewsIndex',
+        path: '/news/index'
       },
       {
-        name: 'viewList',
+        name: 'articles',
         text: '文章',
-        pathName: 'ArticleIndex',
-        path: '/article/index'
+        pathName: 'ArticlesIndex',
+        path: '/articles/index'
       },
       {
-        name: 'account',
+        name: 'profile',
         text: '我的',
         pathName: 'ProfileIndex',
         path: '/profile/index'
       }
     ],
-    assets: {
-      maleAvatar: '/static/images/avatar_male_1.jpg',
-      femaleAvatar: '/static/images/avatar_female_1.jpg',
-      articleAlbum: 'https://static.dei2.com/live/images/article.jpeg'
-    },
-    article: {
-      comments: {}
-    },
-    allArticleTags: [],
-    events: {
-      frontArticleCloseCommentList: 'front-article-close-comment-list'
-    },
-    allUsers: [],
     requestInfo: {
-      baseUrl: 'https://talkapi.dei2.com',
-      // baseUrl: 'http://10.2.4.229:3000',
-      login: '/Zpm/user/login',
-      registry: '/Zpm/user/register',
-      queryUsers: '/Zpm/user/queryUsers', // 查询用户列表，模糊查询。不需要管理员权限
-      updateUserInfo: '/Zpm/user/updateUserInfo', // 更新个人信息
-      getAllArticle: '/Zpm/article/getAll', // 获取文章列表，不需要登录状态
-      viewArticle: '/Zpm/article/content', // 根据文章id查询文章内容
-      getAllComments: '/Zpm/comment/list', // 分页获取评论
-      sendComment: '/Zpm/comment/comment', // 发表评论
-      searchArticle: '/Zpm/article/search', // 按title或content搜索文章
-      getAllTags: '/Zpm/tag/getAll', // 获取 所有 tag
-      createArticle: '/Zpm/article/create', // 新建文章
-      saveArticle: '/Zpm/article/save' // 保存文章内容
+      baseUrl: 'http://127.0.0.1:3000',
+      login: '/Zpm/user/login'
     },
-    localStorageKeys: {
-      userInfo: 'user-info',
-      currentArticleContent: 'current-article-content'
-    },
-    isLoading: false, // 页面是否在加载中
     loginInfo: {},
     needlessLogin: ['Login', 'Register', 'Forget', 'ActivityPreview', 'ArticleList', 'ArticleView'] // 不需要登录的页面
   }

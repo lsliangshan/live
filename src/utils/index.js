@@ -5,11 +5,13 @@
 import KitUtil from './KitUtil'
 import RouterUtil from './RouterUtil'
 import StorageUtil from './StorageUtil'
-import ValidateUtil from './ValidateUtil'
+import BrowserUtil from './BrowserUtil'
+// import ValidateUtil from './ValidateUtil'
 
 export {
   KitUtil,
   RouterUtil,
   StorageUtil,
-  ValidateUtil
+  BrowserUtil
+  // ValidateUtil
 }

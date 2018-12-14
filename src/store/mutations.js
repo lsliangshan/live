@@ -38,8 +38,10 @@ import * as types from './mutation-types'
 import { StorageUtil, KitUtil } from '../utils/index'
 
 export const mutations = {
-  [types.UPDATE_LOADING_STATUS] (state, data) {
-    state.isLoading = data.isLoading
+  [types.SHOW_POPUP] (state, data) {
+    state.popup = Object.assign({}, state.popup, data, {
+      shown: true
+    })
   },
   [types.CACHE_LOGIN_DATA] (state, data) {
     state.loginInfo = data
@@ -48,14 +50,5 @@ export const mutations = {
     } else {
       StorageUtil.removeItem(state.localStorageKeys.userInfo)
     }
-  },
-  [types.SET_COMMENTS] (state, data) {
-    state.article.comments = Object.assign({}, state.article.comments, data)
-  },
-  [types.CACHE_ALL_USERS] (state, data) {
-    state.allUsers = data.users
-  },
-  [types.CACHE_ALL_ARTICLE_TAGS] (state, data) {
-    state.allArticleTags = data.tags
   }
 }

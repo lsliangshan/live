@@ -35,10 +35,20 @@
  */
 const RouterUtil = (function () {
   const _title = function (title) {
-    window.document.title = (title || '智愚')
+    document.title = (title || '智愚')
+  }
+  const _formatUrlParams = function (args) {
+    let s = []
+    for (let k in args) {
+      if (args.hasOwnProperty(k)) {
+        s.push(k + '=' + args[k])
+      }
+    }
+    return s.join('&')
   }
   return {
-    title: _title
+    title: _title,
+    formatUrlParams: _formatUrlParams
   }
 })()
 

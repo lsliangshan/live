@@ -4,10 +4,22 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 const vuxLoader = require('vux-loader')
+const WorkboxPlugin = require('workbox-webpack-plugin')
 
-function resolve (dir) {
+function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
+
+const createLintingRule = () => ({
+  test: /\.(js|vue)$/,
+  loader: 'eslint-loader',
+  enforce: 'pre',
+  include: [resolve('src'), resolve('test')],
+  options: {
+    formatter: require('eslint-friendly-formatter'),
+    emitWarning: !config.dev.showEslintErrorsInOverlay
+  }
+})
 
 let webpackConfig = {
   context: path.resolve(__dirname, '../'),
@@ -17,29 +29,22 @@ let webpackConfig = {
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
-    publicPath: process.env.NODE_ENV === 'production'
-      ? config.build.assetsPublicPath
-      : config.dev.assetsPublicPath
+    publicPath:
+      process.env.NODE_ENV === 'production'
+        ? config.build.assetsPublicPath
+        : config.dev.assetsPublicPath
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
-      'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src'),
+      vue$: 'vue/dist/vue.esm.js',
+      '@': resolve('src')
     }
   },
+  plugins: [new WorkboxPlugin.InjectManifest(config.workbox)],
   module: {
     rules: [
-      ...(config.dev.useEslint? [{
-        test: /\.(js|vue)$/,
-        loader: 'eslint-loader',
-        enforce: 'pre',
-        include: [resolve('src'), resolve('test')],
-        options: {
-          formatter: require('eslint-friendly-formatter'),
-          emitWarning: !config.dev.showEslintErrorsInOverlay
-        }
-      }] : []),
+      ...(config.dev.useEslint ? [createLintingRule()] : []),
       {
         test: /\.vue$/,
         loader: 'vue-loader',
@@ -48,7 +53,11 @@ let webpackConfig = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test')]
+        include: [
+          resolve('src'),
+          resolve('test'),
+          resolve('node_modules/webpack-dev-server/client')
+        ]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -75,9 +84,20 @@ let webpackConfig = {
         }
       }
     ]
+  },
+  node: {
+    // prevent webpack from injecting useless setImmediate polyfill because Vue
+    // source contains it (although only uses it if it's native).
+    setImmediate: false,
+    // prevent webpack from injecting mocks to Node native modules
+    // that does not make sense for the client
+    dgram: 'empty',
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+    child_process: 'empty'
   }
 }
-
 
 module.exports = vuxLoader.merge(webpackConfig, {
   plugins: [
@@ -86,15 +106,12 @@ module.exports = vuxLoader.merge(webpackConfig, {
     {
       name: 'duplicate-style',
       options: {
-        cssProcessorOptions : {
+        cssProcessorOptions: {
           safe: true,
           zindex: false,
           autoprefixer: {
             add: true,
-            browsers: [
-              'iOS >= 7',
-              'Android >= 4.1'
-            ]
+            browsers: ['iOS >= 7', 'Android >= 4.1']
           }
         }
       }

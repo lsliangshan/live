@@ -1,10 +1,16 @@
-# live
+# enkel-pwa-template
 
-> 记录日常工作中的经验
+> Vue-pwa 模板，集成 pwa 环境
+>
+> 1. 离线访问
+> 2. 资源 cache storage 缓存
+> 3. 生成桌面快捷应用
+> 4. service worker
+> 5. 实时消息推送
 
 ## Build Setup
 
-``` bash
+```bash
 # install dependencies
 npm install
 
@@ -26,5 +32,3 @@ npm run e2e
 # run all tests
 npm test
 ```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).

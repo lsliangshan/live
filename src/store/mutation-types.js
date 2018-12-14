@@ -35,51 +35,6 @@
  */
 
 // >>>> mutations:
-export const UPDATE_LOADING_STATUS = 'UPDATE_LOADING_STATUS'
-
+export const SHOW_POPUP = 'SHOW_POPUP'
 // 缓存登录信息
 export const CACHE_LOGIN_DATA = 'CACHE_LOGIN_DATA'
-
-export const SET_COMMENTS = 'SET_COMMENTS'
-
-export const CACHE_ALL_USERS = 'CACHE_ALL_USERS'
-
-export const CACHE_ALL_ARTICLE_TAGS = 'CACHE_ALL_ARTICLE_TAGS'
-
-// >>>> actions:
-
-// 登录1
-export const LOGIN = 'LOGIN'
-
-// 注册1
-export const REGISTER = 'REGISTER'
-
-// 修改密码1
-export const MODIFY_PASSWORD = 'MODIFY_PASSWORD'
-
-// 更新用户信息1
-export const UPDATE_USER_INFO = 'UPDATE_USER_INFO'
-
-// 获取用户信息1
-export const GET_USER_INFO = 'GET_USER_INFO'
-
-// 发送消息1
-export const SEND_MESSAGE = 'SEND_MESSAGE'
-
-// 更新用户的登录信息
-export const UPDATE_LOGIN_INFO = 'UPDATE_LOGIN_INFO'
-
-// 断开socket.io连接
-export const DISCONNECT_SOCKETIO = 'DISCONNECT_SOCKETIO'
-
-// 更新用户头像
-export const UPDATE_AVATAR = 'UPDATE_AVATAR'
-
-// 查询消息的总条数
-export const COUNT_MESSAGE = 'COUNT_MESSAGE'
-
-// AJAX请求，=> Promise1
-export const AJAX = 'AJAX'
-
-// AJAX请求, 不需要登录状态的请求
-export const AJAX2 = 'AJAX2'
