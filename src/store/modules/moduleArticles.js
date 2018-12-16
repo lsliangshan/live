@@ -2,7 +2,7 @@
  * 网易云音乐 模块
  */
 // import * as types from '../mutation-types'
-const moduleNem = {
+const moduleArticles = {
   namespaced: true,
   state: {},
   actions: {
@@ -12,4 +12,4 @@ const moduleNem = {
   }
 }
 
-export default moduleNem
+export default moduleArticles
