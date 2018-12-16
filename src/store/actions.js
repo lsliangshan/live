@@ -33,12 +33,56 @@
 /**
  * Created by liangshan on 2017/7/13.
  */
-// import * as types from './mutation-types'
-// import axios from 'axios'
-// const instance = axios.create({
-//   timeout: 3000
-// })
+import * as types from './mutation-types'
+import axios from 'axios'
+const querystring = require('querystring')
+const instance = axios.create({
+  timeout: 3000
+})
 export const actions = {
+  [types.AJAX] ({ commit, state }, data) {
+    return new Promise((resolve, reject) => {
+      let params = Object.assign({}, data)
+      if (params.url === '') {
+        reject(new Error('url不能为空'))
+      }
+      // 自动添加token,phonenum
+      if (!params.data.token) {
+        params.data.token = state.loginInfo.token
+      }
+      if (!params.data.phonenum) {
+        params.data.phonenum = state.loginInfo.phonenum
+      }
+      instance({
+        method: params.method || 'post',
+        baseURL: params.baseUrl || state.requestInfo.baseUrl,
+        url: params.url,
+        data: querystring.stringify(params.data)
+      }).then(({ data }) => {
+        resolve(data)
+      }).catch(err => {
+        reject(err.message)
+      })
+    })
+  },
+  [types.AJAX2] ({ commit, state }, data) {
+    return new Promise((resolve, reject) => {
+      let params = Object.assign({}, data)
+      if (params.url === '') {
+        reject(new Error('url不能为空'))
+      }
+      instance({
+        method: params.method || 'post',
+        baseURL: params.baseUrl || state.requestInfo.baseUrl,
+        url: params.url,
+        data: querystring.stringify(params.data)
+      }).then(({ data }) => {
+        resolve(data)
+      }).catch(err => {
+        reject(err.message)
+      })
+    })
+  }
   // [types.AJAX] ({ commit, state }, data) {
   //   return new Promise((resolve, reject) => {
   //     let params = JSON.parse(JSON.stringify(data))

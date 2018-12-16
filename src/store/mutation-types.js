@@ -38,3 +38,9 @@
 export const SHOW_POPUP = 'SHOW_POPUP'
 // 缓存登录信息
 export const CACHE_LOGIN_DATA = 'CACHE_LOGIN_DATA'
+
+// AJAX请求，=> Promise1
+export const AJAX = 'AJAX'
+
+// AJAX请求, 不需要登录状态的请求
+export const AJAX2 = 'AJAX2'

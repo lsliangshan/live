@@ -1,7 +1,7 @@
 {
   "cdn": "https://g.alicdn.com/kg/workbox/3.3.0/",
   "caches": {
-    "version": "v1",
+    "version": "v2",
     "prefix": "enkel:",
     "html": {
       "cacheName": "html",
@@ -28,13 +28,13 @@
       "strategies": "staleWhileRevalidate"
     },
     "routes": [
-      // {
-      //   "pathname": "/pwa",
-      //   "strategies": "staleWhileRevalidate",
-      //   "cacheName": "route-pwa",
-      //   "entries": 10,
-      //   "maxAgeSeconds": 43200
-      // }
+      {
+        "match": ".*",
+        "strategies": "staleWhileRevalidate",
+        "cacheName": "route-profile-detail",
+        "entries": 10,
+        "maxAgeSeconds": 43200
+      }
     ]
   }
 }

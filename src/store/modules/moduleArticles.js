@@ -6,7 +6,9 @@ const moduleNem = {
   namespaced: true,
   state: {},
   actions: {
-    async init ({ state, dispatch, rootState }) {}
+    init ({ state, dispatch, rootState }) {
+      return new Promise(async (resolve) => { })
+    }
   }
 }
 

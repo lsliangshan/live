@@ -31,60 +31,49 @@
  **                                              不见满街漂亮妹，哪个归得程序员？
  */
 /**
- * Created by liangshan on 2017/7/13.
+ * Created by liangshan on 2018/7/24.
  */
-import Vue from 'vue'
-import Vuex from 'vuex'
-import * as actions from './actions'
-import * as mutations from './mutations'
-import * as getters from './getters'
-import moduleArticles from './modules/moduleArticles'
-
-Vue.use(Vuex)
-
-const store = new Vuex.Store({
-  actions: actions.actions,
-  mutations: mutations.mutations,
-  getters: getters.getters,
-  modules: {
-    moduleArticles
-  },
-  state: {
-    theme: 'dark',
-    themeColor: 'rgb(10, 81, 15)',
-    events: {},
-    localStorageKeys: {},
-    assets: {},
-    tabbars: [
-      {
-        name: 'news',
-        text: '新闻',
-        pathName: 'NewsIndex',
-        path: '/news/index'
-      },
-      {
-        name: 'articles',
-        text: '文章',
-        pathName: 'ArticlesIndex',
-        path: '/articles/index'
-      },
-      {
-        name: 'profile',
-        text: '我的',
-        pathName: 'ProfileIndex',
-        path: '/profile/index'
+const ValidateUtil = (function () {
+  const _validatePhonenum = function (val) {
+    let _val = val || ''
+    if (!_val || (_val.trim() === '')) {
+      return {
+        valid: false,
+        msg: '手机号不能为空'
       }
-    ],
-    requestInfo: {
-      baseUrl: 'http://192.168.0.105:3000',
-      // baseUrl: 'http://127.0.0.1:3000',
-      login: '/Zpm/user/login'
-    },
-    loginInfo: {},
-    needlessLogin: ['Login', 'Register', 'Forget', 'ActivityPreview', 'ArticleList', 'ArticleView'] // 不需要登录的页面
+    } else if (!/^1[345678]\d{9}$/.test(_val)) {
+      return {
+        valid: false,
+        msg: '手机号格式不正确'
+      }
+    } else {
+      return {
+        valid: true
+      }
+    }
   }
-})
+  const _validatePassword = function (val) {
+    let _val = val || ''
+    if (!_val || (_val.trim() === '')) {
+      return {
+        valid: false,
+        msg: '密码不能为空'
+      }
+    } else if (_val.trim().length < 6) {
+      return {
+        valid: false,
+        msg: '密码最少为6位'
+      }
+    } else {
+      return {
+        valid: true
+      }
+    }
+  }
+  return {
+    validatePhonenum: _validatePhonenum,
+    validatePassword: _validatePassword
+  }
+})()
 
-export default store
-
-global.store = store
+export default ValidateUtil
