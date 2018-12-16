@@ -63,7 +63,7 @@ router.beforeEach(async (to, from, next) => {
   ) {
     next({
       replace: true,
-      name: 'P404'
+      name: '404'
     })
   } else {
     const secret = 'com.dei2'

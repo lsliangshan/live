@@ -55,9 +55,9 @@
 
       <!-- Popup -->
       <div v-transfer-dom>
-        <popup height="100%"
+        <popup height="30%"
                position="bottom"
-               :is-transparent="true"
+               is-transparent
                v-model="popupOptions.shown">
           <!--<popup-header :left-text="'取消'"-->
           <!--:right-text="'保存'"-->
@@ -192,8 +192,9 @@
 }
 
 .popup_inner {
-  width: 100%;
-  height: 100%;
+  width: 95%;
+  height: 95%;
+  border-radius: 5px;
   /*background-color: #ffffff;*/
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
