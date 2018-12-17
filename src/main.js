@@ -14,6 +14,7 @@ import jwt from 'jsonwebtoken'
 import { StorageUtil, RouterUtil, KitUtil } from './utils/index'
 import VueNavigation from 'vue-navigation'
 import { WechatPlugin, AjaxPlugin, ToastPlugin } from 'vux'
+import EnkelToast from './plugins/EnkelToast/index'
 import 'animate.css/animate.min.css'
 
 Vue.config.productionTip = false
@@ -30,6 +31,10 @@ Vue.use(VueNavigation, {
   store,
   moduleName: 'navigation',
   keyName: 'p'
+})
+
+Vue.use(EnkelToast, {
+  duration: 3000
 })
 
 require('./directives/index')

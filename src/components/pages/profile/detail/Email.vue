@@ -5,10 +5,10 @@
       <a class="save_btn"
          href="javascript: void(0)"
          v-if="saveAvailable"
-         @click="modifyValue">保存</a>
+         @click="modifyValue">确定</a>
       <a class="save_btn disabled"
          href="javascript: void(0)"
-         v-else>保存</a>
+         v-else>确定</a>
     </div>
     <group gutter="0px"
            class="detail_email_inner">
@@ -95,7 +95,7 @@ export default {
         value: this.value
       })
       this.cacheValue = this.value
-      this.$router.back()
+      // this.$router.back()
     }
   },
   components: {

@@ -65,6 +65,19 @@ export default {
       that.navigationType = 'back'
       that.transitionName = 'slide-right'
     })
+    window.addEventListener('focusin', () => {
+      // this.$Enkel.toast.show({
+      //   message: 'focusin'
+      // })
+    }, false)
+    window.addEventListener('focusout', () => {
+      // this.$Enkel.toast.show({
+      //   message: 'focusout'
+      // })
+      window.setTimeout(function () {
+        window.scrollTo(0, document.body.clientHeight)
+      }, 100)
+    }, false)
   },
   methods: {
     touchstart (e) {
@@ -100,6 +113,8 @@ export default {
 
 <style lang="less">
 @import "~vux/src/styles/reset.less";
+@import "~vux/src/styles/close.less";
+@import "~vux/src/styles/1px.less";
 * {
   margin: 0;
   padding: 0;

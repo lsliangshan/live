@@ -69,7 +69,7 @@
     </div>
   </div>
 </template>
-<style scoped>
+<style scoped lang="less">
 .icon_color_normal {
   fill: #999999;
 }
@@ -189,6 +189,12 @@
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+.bottom_btns button {
+  background-color: @theme_o_8;
+}
+.bottom_btns button:active {
+  background-color: @theme_o_6;
 }
 
 .unlogin_container {

@@ -21,20 +21,20 @@
     </div>
   </div>
 </template>
-<style scoped>
+<style scoped lang="less">
 .home_container {
   width: 100%;
   height: 100%;
 }
 .main_scroll_container {
   width: 100%;
-  height: calc(100% - 53px);
+  height: calc(~"100% - 51px");
 }
 .bottom_tabbars_container {
   width: 100%;
   height: 53px;
   box-sizing: border-box;
-  border-top: 1px solid #e8e8e8;
+  border-top: 1px solid #f0f0f0;
   background-color: transparent;
 }
 </style>

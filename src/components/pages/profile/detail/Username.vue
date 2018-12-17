@@ -5,16 +5,15 @@
       <a class="save_btn"
          href="javascript: void(0)"
          v-if="saveAvailable"
-         @click="modifyValue">保存</a>
+         @click="modifyValue">确定</a>
       <a class="save_btn disabled"
          href="javascript: void(0)"
-         v-else>保存</a>
+         v-else>确定</a>
     </div>
     <group gutter="0px"
            class="detail_username_inner">
       <x-input placeholder="请输入您的姓名"
                class="username_input"
-               autofocus="autofocus"
                v-model="value"
                :required="true"
                :is-type="validateUsername"
@@ -111,12 +110,12 @@ export default {
         value: this.value
       })
       this.cacheValue = this.value
-      this.$router.back()
+      // this.$router.back()
     },
     showError (msg) {
-      this.$vux.toast.show({
-        type: 'text',
-        text: msg
+      this.$Enkel.toast.show({
+        type: 'error',
+        message: msg
       })
     }
   },

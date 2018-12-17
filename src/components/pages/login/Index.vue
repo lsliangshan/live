@@ -1,7 +1,7 @@
 <template>
   <div class="login_container">
     <div class="bg_image"
-         :style="{backgroundImage: 'url(https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=797016050,588323013&fm=27&gp=0.jpg)'}">
+         :style="{backgroundImage: 'url(https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1833367141,1903898996&fm=26&gp=0.jpg)'}">
       <!--<div class="bg_image" :style="{backgroundImage: 'url(' + appSettings.bg + ')'}">-->
     </div>
     <transition name="fade">
@@ -379,7 +379,26 @@ export default {
       return _action
     },
     async login () {
+      // this.$EnkelToast.show({
+      //   text: 'sort()方法按照升序排列数组项，会调用每个数组项的toString()转型方法，然后比较得到的字符串。toString()方法是把布尔值或BooleanObject转换为字符串，并返回结果: ' + Math.random(),
+      //   // type: 'warning',
+      //   duration: 0,
+      //   closable: true
+      // })
       if (!this.isLoggingIn) {
+        if (!this.loginFormData.username) {
+          this.$Enkel.toast.show({
+            message: '用户名不能为空',
+            type: 'error'
+          })
+          return
+        } else if (!this.loginFormData.password) {
+          this.$Enkel.toast.show({
+            message: '密码不能为空',
+            type: 'error'
+          })
+          return
+        }
         this.isLoggingIn = true
         let loginData = await this.$store.dispatch(types.AJAX2, {
           baseUrl: this.requestInfo.baseUrl,
@@ -389,9 +408,13 @@ export default {
         this.isLoggingIn = false
         if (loginData.status === 200) {
           // 登录成功
-          this.$vux.toast.show({
-            type: 'text',
-            text: '登录成功'
+          // this.$vux.toast.show({
+          //   type: 'text',
+          //   text: '登录成功'
+          // })
+          this.$Enkel.toast.show({
+            type: 'success',
+            message: '登录成功'
           })
           this.$store.commit(types.CACHE_LOGIN_DATA, loginData.data)
           this.$router.back()
@@ -399,9 +422,13 @@ export default {
           // 登录失败
           StorageUtil.removeItem(this.$store.state.localStorageKeys.userInfo)
           this.$store.commit(types.CACHE_LOGIN_DATA, {})
-          this.$vux.toast.show({
-            type: 'text',
-            text: loginData.message || '登录失败'
+          // this.$vux.toast.show({
+          //   type: 'text',
+          //   text: loginData.message || '登录失败'
+          // })
+          this.$Enkel.toast.show({
+            type: 'error',
+            message: loginData.message || '登录失败'
           })
         }
       }
@@ -420,16 +447,24 @@ export default {
         this.isRegistering = false
         if (registryData.status === 200) {
           // 注册成功
-          this.$vux.toast.show({
-            type: 'text',
-            text: '注册成功'
+          // this.$vux.toast.show({
+          //   type: 'text',
+          //   text: '注册成功'
+          // })
+          this.$Enkel.toast.show({
+            type: 'success',
+            message: '注册成功'
           })
           this.action = 'login'
         } else {
           // 注册失败
-          this.$vux.toast.show({
-            type: 'text',
-            text: registryData.message || '注册失败'
+          // this.$vux.toast.show({
+          //   type: 'text',
+          //   text: registryData.message || '注册失败'
+          // })
+          this.$Enkel.toast.show({
+            type: 'error',
+            message: loginData.message || '登录失败'
           })
         }
       }
@@ -451,9 +486,13 @@ export default {
       document.title = title
     },
     showError (msg) {
-      this.$vux.toast.show({
-        type: 'text',
-        text: msg
+      // this.$vux.toast.show({
+      //   type: 'text',
+      //   text: msg
+      // })
+      this.$Enkel.toast.show({
+        type: 'error',
+        message: msg
       })
     }
   },

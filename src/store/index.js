@@ -76,7 +76,8 @@ const store = new Vuex.Store({
       }
     ],
     requestInfo: {
-      baseUrl: 'http://192.168.0.105:3000',
+      baseUrl: 'http://10.2.5.0:3000',
+      // baseUrl: 'http://192.168.0.105:3000',
       // baseUrl: 'http://127.0.0.1:3000',
       login: '/Zpm/user/login'
     },

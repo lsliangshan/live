@@ -79,7 +79,7 @@ export default {
       })
     },
     showError (msg) {
-      this.$vux.toast.show({
+      this.$Enkel.toast.show({
         type: 'text',
         text: msg
       })

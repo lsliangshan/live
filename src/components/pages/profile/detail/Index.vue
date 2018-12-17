@@ -25,7 +25,8 @@
 
       <div class="main_operation_item"
            v-for="(op, index) in detailItems"
-           :key="index"
+           :key="op.name"
+           :data-index="index"
            :data-type="op.type"
            :data-name="op.name"
            :data-title="op.label"
@@ -53,7 +54,6 @@
         </div>
       </div>
 
-      <!-- Popup -->
       <div v-transfer-dom>
         <popup height="30%"
                position="bottom"
@@ -68,6 +68,24 @@
           <!--&gt;-->
           <!--</popup-header>-->
           <div class="popup_inner">
+            <!-- <keep-alive :exclude="['Username', 'Phonenum']"> -->
+            <component :is="popupOptions.component"
+                       :info="personInfo[popupOptions.name]"
+                       :name="popupOptions.name"
+                       @modify="modifyPersonInfo"
+                       @close="closePopup"></component>
+            <!-- </keep-alive> -->
+          </div>
+        </popup>
+      </div>
+
+      <!-- Popup -->
+      <!-- <div v-transfer-dom>
+        <popup height="30%"
+               position="bottom"
+               is-transparent
+               v-model="popupOptions.shown2">
+          <div class="popup_inner">
             <keep-alive :exclude="['Username', 'Phonenum']">
               <component :is="popupOptions.component"
                          :info="personInfo[popupOptions.name]"
@@ -77,7 +95,7 @@
             </keep-alive>
           </div>
         </popup>
-      </div>
+      </div> -->
       <!-- Popup -->
     </div>
 
@@ -299,7 +317,7 @@ export default {
       setTimeout(() => {
         this.startWatch = true
       }, 1000)
-      this.dealPathHash()
+      // this.dealPathHash()
     })
   },
   methods: {
@@ -320,9 +338,9 @@ export default {
        * 更新个人信息
        */
       if (!this._checkToken()) {
-        this.$vux.toast.show({
-          type: 'text',
-          text: '登录状态已过期，请重新登录！'
+        this.$Enkel.toast.show({
+          type: 'error',
+          message: '登录状态已过期，请重新登录！'
         })
         this.$router.replace({
           name: 'Login'
@@ -342,17 +360,17 @@ export default {
       })
       if (updateData.status === 200) {
         // 修改成功
-        this.$vux.toast.show({
-          type: 'text',
-          text: '修改成功'
+        this.$$Enkel.toast.show({
+          type: 'success',
+          message: '修改成功'
         })
         this.hasChanged = false
         this.cachePersonInfo = Object.assign({}, this.personInfo)
         this.$store.commit(types.CACHE_LOGIN_DATA, updateData.data)
       } else {
-        this.$vux.toast.show({
-          type: 'text',
-          text: updateData.message || '修改失败'
+        this.$Enkel.toast.show({
+          type: 'error',
+          message: updateData.message || '修改失败'
         })
       }
     },
@@ -387,21 +405,23 @@ export default {
       if (e.target.dataset.type === '') {
         return
       }
-      this.popupOptions.component = e.target.dataset.component
-      this.popupOptions.title = e.target.dataset.title
-      this.popupOptions.name = e.target.dataset.name.toLowerCase()
-      this.openPopup()
+      setTimeout(() => {
+        this.popupOptions.component = e.target.dataset.component
+        this.popupOptions.title = e.target.dataset.title
+        this.popupOptions.name = e.target.dataset.name.toLowerCase()
+        this.openPopup()
+      }, 16)
     },
     openPopup () {
       if (this.popupOptions.name && this.popupOptions.name.trim() !== '') {
         this.popupOptions.shown = true
-        let _fullPath = this.$route.fullPath
-        if (_fullPath.indexOf('#') > -1) {
-          _fullPath = _fullPath.replace(/#.*$/, '')
-        }
-        this.$router.push({
-          path: _fullPath + '#' + this.popupOptions.name
-        })
+        // let _fullPath = this.$route.fullPath
+        // if (_fullPath.indexOf('#') > -1) {
+        //   _fullPath = _fullPath.replace(/#.*$/, '')
+        // }
+        // this.$router.push({
+        //   path: _fullPath + '#' + this.popupOptions.name
+        // })
       }
     },
     closePopup () {
@@ -414,6 +434,7 @@ export default {
     modifyPersonInfo (args) {
       // 修改个人信息的某一项
       this.personInfo[args.name.toLowerCase()] = args.value
+      this.closePopup()
     },
     formatCity (text) {
       let _textArr = text.split(';')
@@ -456,13 +477,13 @@ export default {
       }
     },
     '$route' (val) {
-      if (val.name === 'ProfileDetail') {
-        if (val.fullPath.indexOf('#') < 0) {
-          this.closePopup()
-        } else {
-          this.openPopup()
-        }
-      }
+      // if (val.name === 'ProfileDetail') {
+      //   if (val.fullPath.indexOf('#') < 0) {
+      //     this.closePopup()
+      //   } else {
+      //     this.openPopup()
+      //   }
+      // }
     }
   },
   directives: {
